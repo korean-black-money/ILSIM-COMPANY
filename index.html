@@ -111,7 +111,7 @@ section .inner{max-width:1140px;margin:0 auto;padding:0 40px;}
   padding:13px 16px;box-shadow:0 10px 26px rgba(60,50,30,0.12);
   animation:ilsRise 6s ease-in-out infinite;
 }
-h1.hero-title{font-size:44px;line-height:1.28;font-weight:700;letter-spacing:-0.02em;color:var(--ink);margin:26px 0 0;white-space:nowrap;}
+h1.hero-title{font-size:44px;line-height:1.28;font-weight:700;letter-spacing:-0.02em;color:var(--ink);margin:26px 0 0;}
 .hero-desc{font-size:17px;line-height:1.85;color:var(--muted);margin:28px 0 0;max-width:400px;}
 .hero-actions{display:flex;gap:12px;margin-top:36px;}
 
@@ -306,6 +306,135 @@ footer{background:var(--ink);padding:60px 0 38px;}
 
 /* Utility */
 .h-sep{height:1px;background:var(--line2);}
+
+/* ── MOBILE NAV ── */
+.mob-menu-btn{
+  display:none;flex-direction:column;justify-content:center;gap:5px;
+  background:none;border:none;cursor:pointer;padding:6px;flex:none;
+}
+.mob-menu-btn span{width:22px;height:1.5px;background:var(--ink2);display:block;border-radius:2px;}
+.mob-drawer{display:none;position:fixed;inset:0;z-index:200;}
+.mob-drawer.open{display:block;}
+.mob-backdrop{position:absolute;inset:0;background:rgba(30,20,10,0.52);}
+.mob-panel{
+  position:absolute;top:0;right:0;bottom:0;width:min(300px,82vw);
+  background:var(--card);border-left:1px solid var(--line);
+  display:flex;flex-direction:column;padding:24px 22px;overflow-y:auto;
+}
+.mob-close{align-self:flex-end;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;margin-bottom:14px;padding:4px;}
+.mob-nav-link{
+  width:100%;text-align:left;background:none;border:none;cursor:pointer;
+  font-size:16px;font-weight:700;color:var(--ink2);padding:15px 0;
+  border-bottom:1px solid var(--line2);letter-spacing:-0.01em;font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;
+}
+.mob-nav-link:last-of-type{border-bottom:none;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .comm-grid{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px;}
+}
+@media(max-width:768px){
+  :root{--sp:52px;}
+
+  /* Nav */
+  .nav-inner{padding:0 18px;height:60px;}
+  .logo-sub{display:none;}
+  #main-nav,.nav-actions{display:none;}
+  .mob-menu-btn{display:flex;}
+
+  /* Inner padding */
+  section .inner{padding:0 18px;}
+  .stats-grid{padding:0 18px;grid-template-columns:1fr 1fr;}
+  .stat-item:first-child{border-left:none;}
+  .stat-item{padding:26px 16px;}
+  .stat-num{font-size:32px;}
+
+  /* Hero */
+  .hero-grid{grid-template-columns:1fr;gap:28px;}
+  .hero-img{height:240px;}
+  .stamp-motif{left:0;width:68px;height:68px;top:14px;}
+  .stamp-inner{width:54px;height:54px;}
+  h1.hero-title{font-size:clamp(26px,7vw,38px);white-space:normal;letter-spacing:-0.02em;}
+  .hero-desc{font-size:14.5px;margin-top:18px;}
+  .hero-actions{flex-wrap:wrap;gap:10px;}
+  .floating-card{right:8px;bottom:8px;padding:10px 13px;}
+
+  /* Brand */
+  .brand-grid{grid-template-columns:1fr;gap:32px;}
+  .brand-img{height:240px;}
+  .brand-badge{right:0;bottom:0;padding:14px 16px;max-width:190px;}
+  .brand-facts{flex-wrap:wrap;gap:0;}
+  .brand-fact{padding:12px 0 0;}
+  .brand-fact+.brand-fact{border-left:none;padding-left:0;border-top:1px solid var(--line);margin-top:4px;}
+
+  /* Ingredient */
+  .ingredient-cards{grid-template-columns:1fr;}
+  .ingredient-card+.ingredient-card{border-left:none;border-top:1px solid var(--line2);}
+  .ingredient-card{padding:28px 22px;}
+
+  /* Process */
+  .process-grid{grid-template-columns:1fr 1fr;}
+  .process-item{padding:20px 14px;}
+  .process-item:nth-child(2){border-right:none;}
+  .process-item:nth-child(4){border-right:none;}
+
+  /* Certs */
+  .certs-section{padding:52px 0;}
+  .certs-grid{grid-template-columns:1fr 1fr;gap:28px;}
+
+  /* Location */
+  .location-grid{grid-template-columns:1fr;gap:20px;}
+  .map-placeholder{height:210px;}
+
+  /* Product */
+  .prod-grid{grid-template-columns:1fr;gap:28px;}
+  .prod-img{height:260px;}
+  .prod-thumbs{grid-template-columns:repeat(4,1fr);}
+  #page-product .prod-section{padding:28px 0 var(--sp);}
+
+  /* Buy / qty */
+  .buy-row{flex-direction:column;gap:10px;}
+  .buy-btn,.cart-btn{flex:none;width:100%;}
+  .shipping-row{flex-wrap:wrap;gap:8px;}
+  .qty-row{flex-wrap:wrap;}
+  .option-btn{align-items:flex-start;flex-wrap:wrap;gap:4px;padding:12px 14px;}
+
+  /* Analysis */
+  .analysis-grid{grid-template-columns:1fr;gap:32px;}
+
+  /* Reviews */
+  .reviews-grid{grid-template-columns:1fr;}
+
+  /* Support */
+  .support-grid{grid-template-columns:1fr;}
+  .form-grid-2{grid-template-columns:1fr;}
+  .support-hero{padding:40px 0;}
+  .form-card{padding:26px 20px;}
+
+  /* Community */
+  .comm-grid{grid-template-columns:1fr;}
+  .posts-grid{grid-template-columns:1fr;}
+  .event-banner{grid-template-columns:1fr;}
+  .event-img{display:none;}
+  .comm-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+  .comm-tab{white-space:nowrap;padding:12px 14px 14px;font-size:14px;}
+
+  /* Footer */
+  .footer-grid{grid-template-columns:1fr;gap:24px;}
+  footer{padding:40px 0 24px;}
+  .footer-divider{margin:28px 0 16px;}
+}
+@media(max-width:480px){
+  .process-grid{grid-template-columns:1fr;}
+  .process-item{border-right:none !important;border-bottom:1px solid var(--line);}
+  .process-item:last-child{border-bottom:none;}
+  .prod-img{height:220px;}
+  .hero-img{height:200px;}
+  .hero-title{font-size:clamp(24px,8vw,34px);}
+  .type-chips{flex-wrap:wrap;}
+}
 </style>
 </head>
 <body>
@@ -344,8 +473,25 @@ footer{background:var(--ink);padding:60px 0 38px;}
       <button class="btn-ghost" onclick="goPage('support')">고객센터</button>
       <button class="btn-primary" onclick="goPage('product')">제품 보기</button>
     </div>
+
+    <button class="mob-menu-btn" onclick="openMobMenu()" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+
+<!-- 모바일 드로어 -->
+<div class="mob-drawer" id="mob-drawer">
+  <div class="mob-backdrop" onclick="closeMobMenu()"></div>
+  <div class="mob-panel">
+    <button class="mob-close" onclick="closeMobMenu()">✕</button>
+    <button class="mob-nav-link" onclick="goPage('about');closeMobMenu()">회사소개 · 오시는길</button>
+    <button class="mob-nav-link" onclick="goPage('product');closeMobMenu()">제품상세</button>
+    <button class="mob-nav-link" onclick="goPage('support');closeMobMenu()">1:1 문의</button>
+    <button class="mob-nav-link" onclick="goPage('community');closeMobMenu()">커뮤니티</button>
+    <button class="btn-primary" style="width:100%;padding:14px;font-size:15px;margin-top:22px;" onclick="goPage('product');closeMobMenu()">제품 보기</button>
+  </div>
+</div>
 
 <!-- ============ ABOUT PAGE ============ -->
 <div id="page-about" class="page active">
@@ -603,7 +749,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
         <div class="prod-grid">
           <div>
             <div class="prod-img" style="padding:0;overflow:hidden;">
-              <img src="images/fig-cut.jpeg" alt="무화과 게코사료" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">
+              <img src="images/gecko-product.png" alt="무화과 게코사료" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">
               <div style="position:absolute;top:20px;left:20px;width:72px;height:72px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;rotate:-8deg;background:var(--bg);">
                 <span class="serif" style="font-size:12px;font-weight:700;color:var(--accent);text-align:center;line-height:1.3;">BEST<br>選</span>
               </div>
@@ -876,47 +1022,56 @@ footer{background:var(--ink);padding:60px 0 38px;}
         <div class="support-grid">
           <div class="form-card">
             <h2 class="serif" style="font-size:24px;font-weight:700;color:var(--ink);margin:0 0 26px;">문의 작성</h2>
-            <div class="form-fields">
+            <form id="contact-form" class="form-fields" onsubmit="handleFormSubmit(event)">
+              <input type="hidden" name="문의유형" id="form-type-hidden" value="제품 문의">
+
               <div>
                 <label class="mono form-label">문의 유형</label>
                 <div class="type-chips" id="type-chips">
-                  <button class="type-chip active" onclick="selectType(this)">제품 문의</button>
-                  <button class="type-chip inactive" onclick="selectType(this)">배송 · 교환</button>
-                  <button class="type-chip inactive" onclick="selectType(this)">정기구독</button>
-                  <button class="type-chip inactive" onclick="selectType(this)">농가 협약 · 제휴</button>
+                  <button type="button" class="type-chip active" onclick="selectType(this)">제품 문의</button>
+                  <button type="button" class="type-chip inactive" onclick="selectType(this)">배송 · 교환</button>
+                  <button type="button" class="type-chip inactive" onclick="selectType(this)">정기구독</button>
+                  <button type="button" class="type-chip inactive" onclick="selectType(this)">농가 협약 · 제휴</button>
                 </div>
               </div>
+
               <div class="form-grid-2">
                 <div>
                   <label class="mono form-label">이름</label>
-                  <input class="form-input" placeholder="홍길동">
+                  <input class="form-input" name="이름" placeholder="홍길동" required>
                 </div>
                 <div>
                   <label class="mono form-label">연락처</label>
-                  <input class="form-input" placeholder="010-0000-0000">
+                  <input class="form-input" name="연락처" placeholder="010-0000-0000">
                 </div>
               </div>
+
               <div>
                 <label class="mono form-label">이메일</label>
-                <input class="form-input" placeholder="example@email.com">
+                <input class="form-input" name="이메일" type="email" placeholder="example@email.com" required>
               </div>
+
               <div>
                 <label class="mono form-label">제목</label>
-                <input class="form-input" placeholder="문의 제목을 입력해 주세요">
+                <input class="form-input" name="제목" placeholder="문의 제목을 입력해 주세요" required>
               </div>
+
               <div>
                 <label class="mono form-label">내용</label>
-                <textarea class="form-textarea" placeholder="문의 내용을 자세히 적어주시면 더 정확히 답변드릴 수 있어요."></textarea>
+                <textarea class="form-textarea" name="내용" placeholder="문의 내용을 자세히 적어주시면 더 정확히 답변드릴 수 있어요." required></textarea>
               </div>
-              <div class="file-zone">
-                <span class="mono" style="color:var(--muted2);font-size:13px;">파일 첨부 — 이미지·영상 최대 5개</span>
-              </div>
+
               <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);cursor:pointer;">
                 <span style="width:18px;height:18px;border-radius:3px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;">✓</span>
                 개인정보 수집·이용에 동의합니다.
               </label>
-              <button class="btn-primary" style="font-size:16px;padding:17px;">문의 접수하기</button>
-            </div>
+
+              <div id="form-success" style="display:none;background:#f0faf4;border:1px solid #b3dfc3;border-radius:4px;padding:16px 18px;font-size:15px;color:#2a6b45;font-weight:600;">
+                ✓ 문의가 접수되었습니다. 영업일 기준 24시간 이내에 답변드리겠습니다.
+              </div>
+
+              <button type="submit" id="form-submit-btn" class="btn-primary" style="font-size:16px;padding:17px;">문의 접수하기</button>
+            </form>
           </div>
           <div style="display:flex;flex-direction:column;gap:20px;">
             <div class="cs-box">
@@ -1174,6 +1329,61 @@ function selectTab(el, tab) {
 }
 
 renderPosts();
+
+/* ── 모바일 메뉴 ── */
+function openMobMenu() {
+  document.getElementById('mob-drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobMenu() {
+  document.getElementById('mob-drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── Formspree 문의 폼 ── */
+function selectType(el) {
+  document.querySelectorAll('.type-chip').forEach(c => {
+    c.classList.toggle('active', c === el);
+    c.classList.toggle('inactive', c !== el);
+  });
+  document.getElementById('form-type-hidden').value = el.textContent.trim();
+}
+
+async function handleFormSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn  = document.getElementById('form-submit-btn');
+  const successBox = document.getElementById('form-success');
+
+  btn.disabled = true;
+  btn.textContent = '전송 중...';
+
+  try {
+    const res = await fetch('https://formspree.io/f/mgojaewa', {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (res.ok) {
+      form.reset();
+      document.querySelectorAll('.type-chip').forEach((c, i) => {
+        c.classList.toggle('active', i === 0);
+        c.classList.toggle('inactive', i !== 0);
+      });
+      document.getElementById('form-type-hidden').value = '제품 문의';
+      successBox.style.display = 'block';
+      btn.style.display = 'none';
+      successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      throw new Error('fail');
+    }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = '문의 접수하기';
+    alert('전송에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+  }
+}
 
 /* ── 압해도 꿀 무화과 ── */
 var honeyOptIdx = 0;
