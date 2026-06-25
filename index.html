@@ -294,7 +294,8 @@ h1.hero-title{font-size:44px;line-height:1.28;font-weight:700;letter-spacing:-0.
 .event-banner{display:grid;grid-template-columns:1fr 1fr;background:var(--dark);border-radius:var(--radius);overflow:hidden;margin-bottom:28px;}
 .event-content{padding:38px;display:flex;flex-direction:column;justify-content:center;}
 .event-badge{align-self:flex-start;background:var(--accent-soft);color:var(--dark);font-size:11px;font-weight:700;padding:5px 12px;border-radius:3px;letter-spacing:0.08em;}
-.event-img{background:repeating-linear-gradient(45deg,#46402F,#46402F 16px,#4F4836 16px,#4F4836 32px);display:flex;align-items:center;justify-content:center;min-height:230px;}
+.event-img{background:#3A3528;display:flex;align-items:center;justify-content:center;min-height:230px;overflow:hidden;}
+.event-img img{width:100%;height:100%;object-fit:contain;padding:24px;box-sizing:border-box;}
 .posts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .post-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:border-color 0.15s;}
 .post-card:hover{border-color:var(--accent);}
@@ -1262,7 +1263,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
                 <button style="align-self:flex-start;margin-top:22px;background:var(--dark-ink);border:none;color:var(--dark);font-weight:700;font-size:14px;padding:12px 22px;border-radius:var(--radius);cursor:pointer;" onclick="openEventForm()">문의하기</button>
               </div>
               <div class="event-img">
-                <span class="mono" style="font-size:12px;color:#9A9079;background:rgba(58,53,40,0.6);padding:8px 13px;">[ 체험단 키비주얼 ]</span>
+                <img src="images/gecko-product.png" alt="무화과 게코사료">
               </div>
             </div>
             <div class="posts-grid" id="posts-grid">
