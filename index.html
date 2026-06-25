@@ -649,7 +649,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
     </section>
 
     <!-- STATS -->
-    <section class="stats-strip">
+    <section class="stats-strip" id="section-stats">
       <div class="stats-grid">
         <div class="stat-item">
           <div class="stat-num serif">10<span class="stat-unit">곳+</span></div>
@@ -672,7 +672,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
     </section>
 
     <!-- BRAND STORY -->
-    <section class="brand-section">
+    <section class="brand-section" id="section-brand">
       <div class="inner">
         <div class="brand-grid">
           <div class="brand-img">
@@ -816,7 +816,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
     </section>
 
     <!-- LOCATION -->
-    <section class="location-section">
+    <section class="location-section" id="section-location">
       <div class="inner">
         <div class="mono eyebrow-simple">오시는 길 — LOCATION</div>
         <h2 class="serif" style="font-size:40px;font-weight:700;color:var(--ink);margin:16px 0 32px;">압해도에서 만나요</h2>
@@ -1430,9 +1430,9 @@ footer{background:var(--ink);padding:60px 0 38px;}
       <div>
         <div class="mono" style="font-size:11px;letter-spacing:0.1em;color:var(--accent-soft);margin-bottom:16px;">브랜드</div>
         <div class="footer-links">
-          <span class="footer-link" onclick="goPage('about')">회사소개</span>
-          <span class="footer-link" onclick="goPage('about')">오시는 길</span>
-          <span class="footer-link" onclick="goPage('about')">농가 협약</span>
+          <span class="footer-link" onclick="goPageAndScroll('about','section-brand')">회사소개</span>
+          <span class="footer-link" onclick="goPageAndScroll('about','section-location')">오시는 길</span>
+          <span class="footer-link" onclick="goPageAndScroll('about','section-stats')">농가 협약</span>
         </div>
       </div>
       <div>
@@ -1466,6 +1466,14 @@ function goPage(page) {
     b.classList.toggle('active', b.dataset.page === page);
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goPageAndScroll(page, sectionId) {
+  goPage(page);
+  setTimeout(() => {
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 }
 
 // Product options
