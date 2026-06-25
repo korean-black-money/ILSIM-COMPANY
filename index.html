@@ -457,6 +457,38 @@ footer{background:var(--ink);padding:60px 0 38px;}
 }
 
 /* ── 게시글 모달 ── */
+.event-form-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(30,20,10,0.72);z-index:400;
+  overflow-y:auto;padding:24px 16px 48px;
+  align-items:center;justify-content:center;
+}
+.event-form-overlay.open{display:flex;}
+.event-form-box{
+  width:100%;max-width:480px;margin:auto;
+  background:var(--card);border-radius:10px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+}
+.event-form-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:24px 24px 20px;border-bottom:1px solid var(--line);
+}
+.event-form-close{
+  width:32px;height:32px;border:none;background:var(--bg);
+  border-radius:50%;font-size:15px;color:var(--muted);cursor:pointer;flex-shrink:0;
+}
+.event-form-close:hover{background:var(--bg2);color:var(--ink);}
+.event-field{padding:0 24px;margin-bottom:18px;}
+.event-field:first-of-type{margin-top:24px;}
+.event-label{font-size:11px;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:7px;}
+.event-input{
+  width:100%;padding:12px 14px;border:1px solid var(--line);
+  border-radius:6px;background:var(--bg);color:var(--ink);
+  font-size:14px;font-family:inherit;box-sizing:border-box;
+}
+.event-input:focus{outline:none;border-color:var(--accent);}
+.event-textarea{min-height:90px;resize:vertical;}
+#event-inquiry-form .btn-primary{border-radius:0 0 10px 10px;margin-top:6px;}
 .post-modal-overlay{
   display:none;position:fixed;inset:0;
   background:rgba(30,20,10,0.72);z-index:300;
@@ -1227,7 +1259,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
                 <span class="mono event-badge">EVENT</span>
                 <h2 class="serif" style="font-size:28px;font-weight:700;color:var(--dark-ink);margin:18px 0 0;line-height:1.3;">신제품 체험단<br>30명 모집</h2>
                 <p style="font-size:14px;color:var(--dark-muted);margin:12px 0 0;line-height:1.7;">무화과 게코사료 신제품을 가장 먼저. 사육일지 작성 시 정기구독 1개월 증정.</p>
-                <button style="align-self:flex-start;margin-top:22px;background:var(--dark-ink);border:none;color:var(--dark);font-weight:700;font-size:14px;padding:12px 22px;border-radius:var(--radius);cursor:pointer;">참여하기</button>
+                <button style="align-self:flex-start;margin-top:22px;background:var(--dark-ink);border:none;color:var(--dark);font-weight:700;font-size:14px;padding:12px 22px;border-radius:var(--radius);cursor:pointer;" onclick="openEventForm()">문의하기</button>
               </div>
               <div class="event-img">
                 <span class="mono" style="font-size:12px;color:#9A9079;background:rgba(58,53,40,0.6);padding:8px 13px;">[ 체험단 키비주얼 ]</span>
@@ -1301,6 +1333,40 @@ footer{background:var(--ink);padding:60px 0 38px;}
       </div>
     </section>
   </main>
+</div>
+
+<!-- ============ 체험단 문의 모달 ============ -->
+<div class="event-form-overlay" id="event-form-modal" onclick="handleEventFormBg(event)">
+  <div class="event-form-box">
+    <div class="event-form-header">
+      <div>
+        <span class="mono" style="font-size:11px;color:var(--accent);letter-spacing:.08em;">EVENT INQUIRY</span>
+        <h3 class="serif" style="font-size:20px;font-weight:700;color:var(--ink);margin:6px 0 0;">신제품 체험단 문의하기</h3>
+      </div>
+      <button class="event-form-close" onclick="closeEventForm()">✕</button>
+    </div>
+    <form id="event-inquiry-form" onsubmit="submitEventForm(event)">
+      <input type="hidden" name="문의유형" value="체험단 신청 문의">
+      <div class="event-field">
+        <label class="mono event-label">이름 <span style="color:var(--accent);">*</span></label>
+        <input class="event-input" type="text" name="이름" placeholder="홍길동" required>
+      </div>
+      <div class="event-field">
+        <label class="mono event-label">연락처 <span style="color:var(--accent);">*</span></label>
+        <input class="event-input" type="tel" name="연락처" placeholder="010-0000-0000" required>
+      </div>
+      <div class="event-field">
+        <label class="mono event-label">이메일 <span style="color:var(--accent);">*</span></label>
+        <input class="event-input" type="email" name="이메일" placeholder="example@email.com" required>
+      </div>
+      <div class="event-field">
+        <label class="mono event-label">문의 내용</label>
+        <textarea class="event-input event-textarea" name="내용" placeholder="사육 중인 게코 종류, 사육 경력 등을 알려주시면 선정에 도움이 됩니다."></textarea>
+      </div>
+      <div id="event-form-msg" style="display:none;font-size:13px;text-align:center;padding:10px;border-radius:6px;margin-bottom:12px;"></div>
+      <button type="submit" class="btn-primary" id="event-submit-btn" style="width:100%;padding:16px;font-size:16px;">문의 신청하기</button>
+    </form>
+  </div>
 </div>
 
 <!-- ============ 게시글 상세 모달 ============ -->
@@ -1929,6 +1995,55 @@ function closeHoneyModal() {
 document.getElementById('honey-modal').addEventListener('click', function(e) {
   if (e.target === this) closeHoneyModal();
 });
+
+// ── 체험단 문의 모달 ──
+function openEventForm() {
+  document.getElementById('event-form-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeEventForm() {
+  document.getElementById('event-form-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  var msg = document.getElementById('event-form-msg');
+  msg.style.display = 'none';
+  document.getElementById('event-inquiry-form').reset();
+  document.getElementById('event-submit-btn').disabled = false;
+  document.getElementById('event-submit-btn').textContent = '문의 신청하기';
+}
+function handleEventFormBg(e) {
+  if (e.target === document.getElementById('event-form-modal')) closeEventForm();
+}
+async function submitEventForm(e) {
+  e.preventDefault();
+  var btn = document.getElementById('event-submit-btn');
+  var msg = document.getElementById('event-form-msg');
+  btn.disabled = true;
+  btn.textContent = '전송 중...';
+  try {
+    var res = await fetch('https://formspree.io/f/mgojaewa', {
+      method: 'POST',
+      body: new FormData(document.getElementById('event-inquiry-form')),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      msg.style.display = 'block';
+      msg.style.background = '#EAF4EA';
+      msg.style.color = '#2E6B2E';
+      msg.textContent = '문의가 접수되었습니다! 빠르게 연락드릴게요 🦎';
+      document.getElementById('event-inquiry-form').reset();
+      setTimeout(closeEventForm, 2500);
+    } else {
+      throw new Error();
+    }
+  } catch {
+    msg.style.display = 'block';
+    msg.style.background = '#FBE9E7';
+    msg.style.color = '#B71C1C';
+    msg.textContent = '전송에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+    btn.disabled = false;
+    btn.textContent = '문의 신청하기';
+  }
+}
 </script>
 </body>
 </html>
