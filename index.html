@@ -860,7 +860,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
   <main>
     <section class="prod-section">
       <div class="inner">
-        <div class="mono" style="font-size:11px;letter-spacing:0.1em;color:var(--muted2);margin-bottom:28px;">홈 / 제품 / <span style="color:var(--ink2);">무화과 게코사료</span></div>
+        <div class="mono" style="font-size:11px;letter-spacing:0.1em;color:var(--muted2);margin-bottom:28px;"><span onclick="goPage('about')" style="cursor:pointer;color:var(--accent);">홈</span> / 제품 / <span style="color:var(--ink2);">무화과 게코사료</span></div>
         <div class="prod-grid">
           <div>
             <div class="prod-img" style="padding:0;overflow:hidden;">
@@ -870,10 +870,10 @@ footer{background:var(--ink);padding:60px 0 38px;}
               </div>
             </div>
             <div class="prod-thumbs">
-              <div class="prod-thumb"></div>
-              <div class="prod-thumb"></div>
-              <div class="prod-thumb"></div>
-              <div class="prod-thumb"></div>
+              <div class="prod-thumb" style="overflow:hidden;padding:0;"><img src="images/gecko-product.png" alt="무화과 게코사료" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);"></div>
+              <div class="prod-thumb" style="overflow:hidden;padding:0;"><img src="images/fig-close.jpeg" alt="무화과 원물" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);"></div>
+              <div class="prod-thumb" style="overflow:hidden;padding:0;"><img src="images/fig-cut.jpeg" alt="무화과 단면" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);"></div>
+              <div class="prod-thumb" style="overflow:hidden;padding:0;"><img src="images/farm-wide.jpeg" alt="압해도 농장" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);"></div>
             </div>
           </div>
           <div>
@@ -1014,7 +1014,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
     <!-- 압해도 꿀 무화과 -->
     <section class="prod-section" style="border-top:1px solid var(--line);padding-top:60px;">
       <div class="inner">
-        <div class="mono" style="font-size:11px;letter-spacing:0.1em;color:var(--muted2);margin-bottom:28px;">홈 / 제품 / <span style="color:var(--ink2);">압해도 꿀 무화과</span></div>
+        <div class="mono" style="font-size:11px;letter-spacing:0.1em;color:var(--muted2);margin-bottom:28px;"><span onclick="goPage('about')" style="cursor:pointer;color:var(--accent);">홈</span> / 제품 / <span style="color:var(--ink2);">압해도 꿀 무화과</span></div>
         <div class="prod-grid">
           <!-- 썸네일 -->
           <div>
@@ -1177,8 +1177,8 @@ footer{background:var(--ink);padding:60px 0 38px;}
               </div>
 
               <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);cursor:pointer;">
-                <span style="width:18px;height:18px;border-radius:3px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;">✓</span>
-                개인정보 수집·이용에 동의합니다.
+                <input type="checkbox" id="privacy-agree" name="개인정보동의" required style="width:17px;height:17px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;">
+                개인정보 수집·이용에 동의합니다. <span style="color:var(--accent);">*</span>
               </label>
 
               <div id="form-success" style="display:none;background:#f0faf4;border:1px solid #b3dfc3;border-radius:4px;padding:16px 18px;font-size:15px;color:#2a6b45;font-weight:600;">
@@ -1274,15 +1274,15 @@ footer{background:var(--ink);padding:60px 0 38px;}
             <div class="sidebar-card">
               <h3 class="serif" style="font-size:17px;font-weight:700;color:var(--ink);margin:0 0 18px;">인기글</h3>
               <div class="popular-posts">
-                <div class="popular-item">
+                <div class="popular-item" onclick="openPostModal(5)" style="cursor:pointer;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
                   <span class="serif" style="font-size:18px;font-weight:700;color:var(--accent);">一</span>
                   <span style="font-size:14px;font-weight:600;color:var(--ink2);line-height:1.45;">해칠링 첫 탈피 + 첫 급여 일지</span>
                 </div>
-                <div class="popular-item">
+                <div class="popular-item" onclick="openPostModal(1)" style="cursor:pointer;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
                   <span class="serif" style="font-size:18px;font-weight:700;color:var(--accent);">二</span>
                   <span style="font-size:14px;font-weight:600;color:var(--ink2);line-height:1.45;">무화과 사료로 바꾸고 3주 체중 변화</span>
                 </div>
-                <div class="popular-item">
+                <div class="popular-item" onclick="openPostModal(3)" style="cursor:pointer;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
                   <span class="serif" style="font-size:18px;font-weight:700;color:var(--accent);">三</span>
                   <span style="font-size:14px;font-weight:600;color:var(--ink2);line-height:1.45;">아성체 급여 주기 이렇게 맞나요?</span>
                 </div>
@@ -1291,14 +1291,14 @@ footer{background:var(--ink);padding:60px 0 38px;}
             <div class="sidebar-card">
               <h3 class="serif" style="font-size:17px;font-weight:700;color:var(--ink);margin:0 0 16px;">인기 태그</h3>
               <div class="tag-list">
-                <span class="mono tag">#사육일지</span>
-                <span class="mono tag">#편식</span>
-                <span class="mono tag accent">#무화과게코사료</span>
-                <span class="mono tag">#해칠링</span>
-                <span class="mono tag">#탈피</span>
+                <span class="mono tag" style="cursor:pointer;" onclick="filterByTag('사육일지')">#사육일지</span>
+                <span class="mono tag" style="cursor:pointer;" onclick="filterByTag('사용후기')">#편식</span>
+                <span class="mono tag accent" style="cursor:pointer;" onclick="filterByTag('전체')">#무화과게코사료</span>
+                <span class="mono tag" style="cursor:pointer;" onclick="filterByTag('사육일지')">#해칠링</span>
+                <span class="mono tag" style="cursor:pointer;" onclick="filterByTag('사육일지')">#탈피</span>
               </div>
             </div>
-            <button class="btn-primary" style="font-size:15px;padding:16px;border-radius:var(--radius);">글쓰기</button>
+            <button class="btn-primary" style="font-size:15px;padding:16px;border-radius:var(--radius);" onclick="showToast('글쓰기 기능은 준비 중입니다. 1:1 문의로 제보해 주세요 😊')">글쓰기</button>
           </aside>
         </div>
       </div>
@@ -1433,7 +1433,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
         <div class="footer-links">
           <span class="footer-link" onclick="goPage('about')">회사소개</span>
           <span class="footer-link" onclick="goPage('about')">오시는 길</span>
-          <span class="footer-link">농가 협약</span>
+          <span class="footer-link" onclick="goPage('about')">농가 협약</span>
         </div>
       </div>
       <div>
@@ -1478,7 +1478,7 @@ const opts = [
 function selectOpt(i, price) {
   document.getElementById('sel-price').textContent = price + '원';
   document.getElementById('sel-name').textContent = opts[i].name;
-  document.querySelectorAll('.option-btn').forEach((b, j) => {
+  document.querySelectorAll('#option-list .option-btn').forEach((b, j) => {
     b.classList.toggle('active', i === j);
     const radio = b.querySelector('.option-radio');
     radio.className = 'option-radio ' + (i === j ? 'on' : 'off');
@@ -1856,8 +1856,8 @@ function changeHoneyQty(d) {
 
 function handleHoneyOrder() {
   var opt = honeyOpts[honeyOptIdx];
-  if (opt.price === '별도 문의') { alert('업소 대량구매는 고객센터로 문의해 주세요.'); return; }
-  alert('주문: ' + opt.name + ' × ' + honeyQty);
+  if (opt.price === '별도 문의') { goPage('support'); return; }
+  goPage('support');
 }
 
 function handleHoneyCart() {
@@ -1959,6 +1959,27 @@ function renderCartPage() {
     '</div>';
   }).join('');
   document.getElementById('cart-total').textContent = total.toLocaleString() + '원';
+}
+function showToast(msg) {
+  var t = document.getElementById('cart-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'cart-toast';
+    t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:14px 24px;border-radius:8px;font-size:14px;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:opacity .3s;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function() { t.style.opacity = '0'; }, 3000);
+}
+function filterByTag(tab) {
+  goPage('community');
+  currentTab = tab;
+  document.querySelectorAll('.comm-tab').forEach(function(t) {
+    t.classList.toggle('active', t.textContent.trim() === tab || (tab === '전체' && t.textContent.trim() === '전체'));
+  });
+  renderPosts();
 }
 function showCartToast(msg) {
   var t = document.getElementById('cart-toast');
