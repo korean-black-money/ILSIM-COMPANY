@@ -380,11 +380,11 @@ footer{background:var(--ink);padding:60px 0 38px;}
 
   /* Brand */
   .brand-grid{grid-template-columns:1fr;gap:32px;}
-  .brand-img{height:240px;}
-  .brand-badge{right:0;bottom:0;padding:14px 16px;max-width:190px;}
-  .brand-facts{flex-wrap:wrap;gap:0;}
-  .brand-fact{padding:12px 0 0;}
-  .brand-fact+.brand-fact{border-left:none;padding-left:0;border-top:1px solid var(--line);margin-top:4px;}
+  .brand-img{height:240px;overflow:hidden;}
+  .brand-badge{right:0;bottom:0;padding:12px 14px;max-width:none;font-size:13px;}
+  .brand-facts{flex-direction:column;gap:0;}
+  .brand-fact{width:100%;padding:14px 0;box-sizing:border-box;}
+  .brand-fact+.brand-fact{border-left:none;padding-left:0;border-top:1px solid var(--line);}
 
   /* Ingredient */
   .ingredient-cards{grid-template-columns:1fr;}
