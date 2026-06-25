@@ -19,7 +19,7 @@ html,body{margin:0;padding:0;}
   --serif:'Gowun Batang',serif;
   --btn-bg:#5C6B50;--btn-color:#F2ECDF;--btn-border:1.5px solid transparent;--btn-radius:4px;
 }
-body{background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+body{background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-x:hidden;}
 .serif{font-family:var(--serif);}
 .mono{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;}
 @keyframes ilsRise{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
@@ -432,8 +432,66 @@ footer{background:var(--ink);padding:60px 0 38px;}
   .process-item:last-child{border-bottom:none;}
   .prod-img{height:220px;}
   .hero-img{height:200px;}
-  .hero-title{font-size:clamp(24px,8vw,34px);}
+  h1.hero-title{font-size:clamp(24px,8vw,34px);}
   .type-chips{flex-wrap:wrap;}
+  .price-main{font-size:28px;}
+  .event-content{padding:24px 20px;}
+  .cs-box .serif{font-size:26px;}
+  .footer-grid{gap:20px;}
+}
+
+/* ── 게시글 모달 ── */
+.post-modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(30,20,10,0.72);z-index:300;
+  overflow-y:auto;padding:24px 16px 48px;
+}
+.post-modal-overlay.open{display:block;}
+.post-modal-box{
+  max-width:680px;margin:0 auto;
+  background:var(--card);border-radius:8px;overflow:hidden;
+}
+.post-modal-header{
+  padding:20px 24px;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card);z-index:10;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+}
+.post-modal-body{
+  padding:28px 24px;
+  font-size:15px;line-height:1.9;color:var(--muted);
+  border-bottom:1px solid var(--line);
+}
+.post-modal-body h4{
+  font-family:var(--serif);font-size:17px;font-weight:700;
+  color:var(--ink);margin:22px 0 10px;
+}
+.post-modal-body h4:first-child{margin-top:0;}
+.post-modal-body p{margin:0 0 14px;}
+.post-modal-body ul{padding-left:20px;margin:0 0 14px;}
+.post-modal-body li{margin-bottom:6px;}
+.post-modal-body strong{color:var(--ink2);font-weight:700;}
+.post-like-btn{
+  display:flex;align-items:center;gap:7px;
+  background:var(--bg);border:1px solid var(--line);border-radius:100px;
+  padding:8px 20px;cursor:pointer;font-size:14px;font-weight:700;
+  color:var(--ink2);transition:all 0.15s;font-family:inherit;
+}
+.post-like-btn.liked{border-color:var(--accent);color:var(--accent);}
+.comment-item{
+  background:var(--bg);border-radius:4px;padding:14px 16px;
+}
+.comment-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;
+}
+.comment-del-btn{
+  background:none;border:none;font-size:12px;color:var(--muted2);
+  cursor:pointer;padding:0;font-family:inherit;
+}
+.comment-del-btn:hover{color:var(--accent);}
+@media(max-width:480px){
+  .post-modal-header{padding:16px 18px;}
+  .post-modal-body{padding:20px 18px;}
+  .post-modal-box > div:last-child{padding:18px 18px 24px;}
 }
 </style>
 </head>
@@ -718,7 +776,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
             <div style="display:flex;flex-direction:column;gap:14px;">
               <div class="location-row">
                 <span class="mono location-label">전화</span>
-                <span style="font-size:15px;font-weight:600;color:var(--ink2);">1668-0000</span>
+                <span style="font-size:15px;font-weight:600;color:var(--ink2);">010-6518-1136</span>
               </div>
               <div class="location-row">
                 <span class="mono location-label">메일</span>
@@ -1076,7 +1134,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
           <div style="display:flex;flex-direction:column;gap:20px;">
             <div class="cs-box">
               <div class="mono" style="font-size:11px;letter-spacing:0.12em;opacity:0.85;">고객센터</div>
-              <div class="serif" style="font-size:34px;font-weight:700;margin-top:10px;">1668-0000</div>
+              <div class="serif" style="font-size:34px;font-weight:700;margin-top:10px;">010-6518-1136</div>
               <div style="font-size:13px;opacity:0.85;margin-top:12px;line-height:1.7;">평일 09:00–18:00<br>점심 12:30–13:30 / 주말·공휴일 휴무</div>
             </div>
             <div class="faq-card">
@@ -1191,6 +1249,51 @@ footer{background:var(--ink);padding:60px 0 38px;}
   </main>
 </div>
 
+<!-- ============ 게시글 상세 모달 ============ -->
+<div class="post-modal-overlay" id="post-modal" onclick="handlePostModalBg(event)">
+  <div class="post-modal-box">
+
+    <div class="post-modal-header">
+      <div style="min-width:0;">
+        <span id="pm-cat" class="mono" style="font-size:11px;color:var(--accent);letter-spacing:0.08em;"></span>
+        <h2 id="pm-title" class="serif" style="font-size:20px;font-weight:700;color:var(--ink);margin:8px 0 0;line-height:1.4;"></h2>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap;">
+          <span id="pm-author" class="mono" style="font-size:12px;color:var(--muted2);"></span>
+          <span id="pm-date"   class="mono" style="font-size:12px;color:var(--muted2);"></span>
+        </div>
+      </div>
+      <button onclick="closePostModal()" style="flex:none;width:32px;height:32px;border:none;background:var(--bg);border-radius:50%;font-size:16px;color:var(--muted);cursor:pointer;margin-top:2px;">✕</button>
+    </div>
+
+    <div id="pm-content" class="post-modal-body"></div>
+
+    <div style="padding:14px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;">
+      <button id="pm-like-btn" class="post-like-btn" onclick="togglePostLike()">
+        <span>♥</span><span id="pm-like-count"></span>
+      </button>
+    </div>
+
+    <div style="padding:24px 24px 32px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;">
+        <span class="serif" style="font-size:16px;font-weight:700;color:var(--ink);">댓글</span>
+        <span id="pm-comment-count" class="mono" style="font-size:13px;color:var(--muted2);">0</span>
+      </div>
+
+      <div id="pm-comments-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:22px;"></div>
+
+      <div style="border-top:1px solid var(--line2);padding-top:20px;">
+        <div class="form-grid-2" style="margin-bottom:10px;">
+          <input id="ci-author"   class="form-input" placeholder="닉네임" style="font-size:14px;padding:10px 14px;">
+          <input id="ci-password" class="form-input" type="password" placeholder="비밀번호 (삭제용)" style="font-size:14px;padding:10px 14px;">
+        </div>
+        <textarea id="ci-text" class="form-textarea" placeholder="댓글을 입력해 주세요." style="height:86px;margin-bottom:10px;font-size:14px;"></textarea>
+        <button onclick="submitComment()" class="btn-primary" style="font-size:14px;padding:12px 22px;">댓글 등록</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="inner">
@@ -1222,7 +1325,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
       </div>
       <div>
         <div class="mono" style="font-size:11px;letter-spacing:0.1em;color:var(--accent-soft);margin-bottom:16px;">고객센터</div>
-        <div class="serif" style="font-size:24px;font-weight:700;color:var(--bg);">1668-0000</div>
+        <div class="serif" style="font-size:24px;font-weight:700;color:var(--bg);">010-6518-1136</div>
         <div style="font-size:13px;color:var(--muted2);margin-top:8px;line-height:1.7;">평일 09:00–18:00<br>harim1136@naver.com</div>
       </div>
     </div>
@@ -1281,40 +1384,137 @@ function toggleFaq(i) {
   });
 }
 
-// Support type chips
-function selectType(el) {
-  document.querySelectorAll('.type-chip').forEach(c => {
-    c.className = 'type-chip inactive';
-  });
-  el.className = 'type-chip active';
-}
-
-// Community tabs + posts
+// ── 커뮤니티 게시글 데이터 ──
 const allPosts = [
-  { cat: '사육일지', title: '무화과 사료로 바꾸고 3주, 체중 변화 기록', author: '게코집사_민', cmt: 24, like: 88 },
-  { cat: '사용후기', title: '편식 심하던 우리 아이가 완식했어요', author: '리프', cmt: 12, like: 64 },
-  { cat: 'Q&A', title: '아성체 급여 주기 이렇게 맞나요?', author: '초보사육', cmt: 31, like: 20 },
-  { cat: '사용후기', title: '농가 협약 스토리 보고 신뢰가 생겼어요', author: '무화과러버', cmt: 9, like: 53 },
-  { cat: '사육일지', title: '해칠링 첫 탈피 + 첫 급여 일지', author: 'crestie', cmt: 18, like: 77 },
-  { cat: '이벤트', title: '[당첨발표] 신제품 체험단 30명', author: 'ILSIM 운영팀', cmt: 120, like: 210 },
+  {
+    id: 1, cat: '사육일지',
+    title: '무화과 사료로 바꾸고 3주, 체중 변화 기록',
+    author: '게코집사_민', date: '2026.06.10', likes: 88, cmt: 24,
+    content: `
+      <p>안녕하세요, 게코집사 민입니다. 크레스티드 게코 두 마리(바람, 달)를 키운 지 2년이 됐어요.</p>
+      <p>지난 5월 20일부터 ILSIM 무화과 게코사료로 교체하면서 3주간 체중을 꼼꼼히 기록해봤습니다. 결론부터 말하면 <strong>두 마리 모두 안정적으로 체중이 늘었고, 거부 없이 잘 먹었어요.</strong></p>
+      <h4>교체 전 상황</h4>
+      <p>기존에 먹이던 사료는 수입산 CGD였습니다. 바람이(수컷 38g)가 가끔 거부해서 고민이 많았어요.</p>
+      <h4>교체 방법</h4>
+      <p>ILSIM 권장대로 기존 사료 1:3 비율 7일 → 1:1로 7일 → 이후 100% 전환했습니다.</p>
+      <h4>3주 체중 변화</h4>
+      <ul>
+        <li>바람 (수컷): 35g → 37g → 38g</li>
+        <li>달 (암컷): 42g → 43.5g → 44g</li>
+      </ul>
+      <p>무화과 향이 좋은지 교체 후 거부하는 일이 사라졌어요. 급여 후 그릇을 깨끗하게 핥는 걸 처음 봤습니다 😊</p>
+      <p><strong>#무화과게코사료 #사육일지 #크레스티드게코 #체중기록</strong></p>
+    `
+  },
+  {
+    id: 2, cat: '사용후기',
+    title: '편식 심하던 우리 아이가 완식했어요',
+    author: '리프', date: '2026.06.08', likes: 64, cmt: 12,
+    content: `
+      <p>저희 집 게코 이름은 '리프'예요. 레드 달마시안 모프인데 입이 정말 까다로워서 CGD 브랜드를 세 개나 바꿔봤습니다.</p>
+      <p>솔직히 반신반의하면서 ILSIM을 주문했는데... <strong>첫날부터 핥기 시작하더니 이틀째에 완식했습니다.</strong></p>
+      <p>무화과 원물 22% 함유라는 게 냄새에서도 느껴지는지 뚜껑 열자마자 달콤한 향이 났어요. 리프도 그 향에 반응한 것 같아요.</p>
+      <h4>급여 방법</h4>
+      <p>분말 1 : 물 2.5 비율로 개어서 30분 내에 줬어요. 너무 묽지 않게, 살짝 되직하게 만드는 게 포인트인 것 같습니다.</p>
+      <p>앞으로 정기구독으로 전환할 계획이에요. 편식 게코 집사분들께 강력 추천합니다!</p>
+      <p><strong>#사용후기 #편식해결 #무화과게코사료 #달마시안모프</strong></p>
+    `
+  },
+  {
+    id: 3, cat: 'Q&A',
+    title: '아성체 급여 주기 이렇게 맞나요?',
+    author: '초보사육', date: '2026.06.05', likes: 20, cmt: 31,
+    content: `
+      <p>안녕하세요! 게코 키운 지 4개월 된 초보 사육사입니다 🦎</p>
+      <p>저희 아이가 현재 7개월령(약 20g) 아성체인데, ILSIM 사료를 구매해서 급여를 시작하려고 해요.</p>
+      <h4>Q1. 아성체 급여 주기는 2~3일에 한 번이 맞나요?</h4>
+      <p>홈페이지 가이드에 아성체 2~3일 1회라고 되어 있는데, 잘 먹으면 더 자주 줘도 될지 궁금합니다.</p>
+      <h4>Q2. 남긴 사료는 얼마나 두었다가 치워야 하나요?</h4>
+      <p>개어서 주면 굳어버리는데, 다음날 굳은 사료를 먹어도 괜찮은지 여쭤봅니다.</p>
+      <p>초보라 모르는 게 많지만 열심히 배우겠습니다. 답변 감사합니다!</p>
+      <div style="margin-top:20px;padding:18px;background:var(--bg2);border-radius:4px;border-left:3px solid var(--accent);">
+        <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">💬 ILSIM 운영팀 답변</div>
+        <p style="font-size:14px;line-height:1.8;color:var(--muted);margin:0;">안녕하세요! 아성체는 성장기이므로 2~3일 1회 급여를 권장드립니다. 잘 드신다면 2일 주기도 괜찮습니다. 개어놓은 사료는 30분~1시간 이내 미섭취 시 제거하는 게 위생상 좋아요. 항상 신선하게 제공해주세요 😊</p>
+      </div>
+    `
+  },
+  {
+    id: 4, cat: '사용후기',
+    title: '농가 협약 스토리 보고 신뢰가 생겼어요',
+    author: '무화과러버', date: '2026.06.03', likes: 53, cmt: 9,
+    content: `
+      <p>게코 사료를 찾다가 ILSIM 홈페이지를 발견했는데, 제품보다 브랜드 스토리에 먼저 마음이 끌렸어요.</p>
+      <p>압해도 농가와 직접 협약을 맺어 버려지던 완숙 무화과를 제값에 매입한다는 이야기가 인상 깊었습니다. <strong>단순한 사료 회사를 넘어 농가와의 상생을 실천한다</strong>는 점에서 믿음이 갔어요.</p>
+      <p>성분 분석표 공개, 배치별 시험성적서 제공 등 투명한 정보 공개도 마음에 들었습니다.</p>
+      <h4>사용 소감</h4>
+      <p>대용량 200g을 구매했는데 향이 정말 좋고, 저희 아이(하우슬리, 성체 수컷)가 거부 없이 잘 먹어요. 다음엔 정기구독으로 전환할 예정입니다.</p>
+      <p><strong>#사용후기 #ILSIM #농가협약 #무화과게코사료 #크레스티드게코</strong></p>
+    `
+  },
+  {
+    id: 5, cat: '사육일지',
+    title: '해칠링 첫 탈피 + 첫 급여 일지',
+    author: 'crestie', date: '2026.05.28', likes: 77, cmt: 18,
+    content: `
+      <p>드디어 우리 아이 콩(해칠링, 부화 후 45일)이 첫 탈피를 마쳤습니다! 🎉</p>
+      <p>탈피 전부터 식욕이 없어서 걱정이 많았는데, 탈피 완료 이틀 후 ILSIM 무화과 사료 급여를 시작했어요.</p>
+      <h4>첫 급여 준비</h4>
+      <p>해칠링이라 아주 소량만 준비했습니다. 분말 0.3g 정도를 물 0.75ml로 묽게 개어줬어요. 너무 되직하면 먹기 힘들 것 같아서요.</p>
+      <h4>반응</h4>
+      <p>처음엔 15분 정도 쳐다만 보더니... 슬금슬금 다가와서 핥기 시작했어요! 다 먹지는 않았지만 절반 이상 먹었습니다.</p>
+      <h4>1주 후 체중 변화</h4>
+      <p>탈피 직후 4g → 일주일 후 4.4g. 해칠링에겐 큰 성장이에요!</p>
+      <p>앞으로도 꾸준히 일지를 작성할게요. 콩이 건강하게 자라길 🌱</p>
+      <p><strong>#해칠링 #첫탈피 #첫급여 #사육일지 #크레스티드게코 #ILSIM</strong></p>
+    `
+  },
+  {
+    id: 6, cat: '이벤트',
+    title: '[당첨발표] 신제품 체험단 30명 선정 결과',
+    author: 'ILSIM 운영팀', date: '2026.05.20', likes: 210, cmt: 120,
+    content: `
+      <p>안녕하세요, ILSIM 운영팀입니다.</p>
+      <p>5월 1일~15일 진행된 <strong>신제품 무화과 게코사료 체험단 모집</strong>에 총 387명이 신청해 주셨습니다. 심사를 통해 30명을 최종 선정하였습니다.</p>
+      <h4>선정 기준</h4>
+      <ul>
+        <li>사육 경력 및 환경</li>
+        <li>기존 사료 교체 의향 및 이유의 구체성</li>
+        <li>사육일지 작성 의지</li>
+      </ul>
+      <h4>당첨자 닉네임 (앞 2글자 공개)</h4>
+      <p style="font-size:13px;line-height:2;color:var(--muted);">게코** · 리프** · 달마** · 바람** · cre** · 초보** · 하우** · 민트** · 사막** · 이슬** · 파란** · 노을** · 솔잎** · 봄비** · 여름** · 가을** · 겨울** · 별빛** · 달빛** · 햇살** · 구름** · 바다** · 산들** · 새벽** · 황혼** · 이슬** · 파도** · 모래** · 하늘** · 초록**</p>
+      <p>당첨자분들께는 개별 DM으로 연락드렸습니다. 5월 22일 자정까지 회신이 없으시면 자동 취소됩니다.</p>
+      <p>참여해 주신 모든 분께 감사드립니다. 다음 이벤트에서 또 만나요! 🦎</p>
+    `
+  }
 ];
 
 let currentTab = '전체';
+let postLikes  = JSON.parse(localStorage.getItem('ilsim_likes')  || '{}');
+let likedPosts = JSON.parse(localStorage.getItem('ilsim_liked')  || '{}');
+let currentPostId = null;
+
+function safeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function getLikeCount(post) {
+  return postLikes[post.id] !== undefined ? postLikes[post.id] : post.likes;
+}
 
 function renderPosts() {
-  const grid = document.getElementById('posts-grid');
+  const grid  = document.getElementById('posts-grid');
   const posts = currentTab === '전체' ? allPosts : allPosts.filter(p => p.cat === currentTab);
   grid.innerHTML = posts.map(p => `
-    <div class="post-card">
+    <div class="post-card" onclick="openPostModal(${p.id})">
       <div class="post-thumb">
-        <span class="mono" style="font-size:11px;color:#8B8068;">[ 썸네일 ]</span>
         <span class="mono post-cat">${p.cat}</span>
       </div>
       <div class="post-body">
         <h3 class="serif" style="font-size:16px;font-weight:700;color:var(--ink);line-height:1.45;margin:0;">${p.title}</h3>
         <div class="post-meta">
-          <span class="mono" style="font-size:11px;color:var(--muted2);">${p.author}</span>
-          <span class="mono" style="font-size:11px;color:var(--accent);">♥ ${p.like} · 💬 ${p.cmt}</span>
+          <span class="mono" style="font-size:11px;color:var(--muted2);">${p.author} · ${p.date}</span>
+          <span class="mono" style="font-size:11px;color:var(--accent);">♥ ${getLikeCount(p)} · 💬 ${p.cmt}</span>
         </div>
       </div>
     </div>
@@ -1326,6 +1526,117 @@ function selectTab(el, tab) {
   document.querySelectorAll('.comm-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   renderPosts();
+}
+
+// ── 게시글 상세 모달 ──
+function openPostModal(postId) {
+  const post = allPosts.find(p => p.id === postId);
+  if (!post) return;
+  currentPostId = postId;
+
+  document.getElementById('pm-cat').textContent    = post.cat;
+  document.getElementById('pm-title').textContent  = post.title;
+  document.getElementById('pm-author').textContent = post.author;
+  document.getElementById('pm-date').textContent   = post.date;
+  document.getElementById('pm-content').innerHTML  = post.content;
+
+  const count = getLikeCount(post);
+  document.getElementById('pm-like-count').textContent = count;
+  const btn = document.getElementById('pm-like-btn');
+  btn.classList.toggle('liked', !!likedPosts[postId]);
+
+  renderComments();
+  document.getElementById('post-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePostModal() {
+  document.getElementById('post-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  currentPostId = null;
+  document.getElementById('ci-author').value   = '';
+  document.getElementById('ci-password').value = '';
+  document.getElementById('ci-text').value     = '';
+}
+
+function handlePostModalBg(e) {
+  if (e.target === document.getElementById('post-modal')) closePostModal();
+}
+
+function togglePostLike() {
+  if (!currentPostId) return;
+  const post  = allPosts.find(p => p.id === currentPostId);
+  const count = getLikeCount(post);
+  if (likedPosts[currentPostId]) {
+    postLikes[currentPostId] = count - 1;
+    delete likedPosts[currentPostId];
+  } else {
+    postLikes[currentPostId] = count + 1;
+    likedPosts[currentPostId] = true;
+  }
+  localStorage.setItem('ilsim_likes', JSON.stringify(postLikes));
+  localStorage.setItem('ilsim_liked', JSON.stringify(likedPosts));
+  document.getElementById('pm-like-count').textContent = getLikeCount(post);
+  document.getElementById('pm-like-btn').classList.toggle('liked', !!likedPosts[currentPostId]);
+  renderPosts();
+}
+
+// ── 댓글 ──
+function getComments() {
+  return JSON.parse(localStorage.getItem('ilsim_cmt_' + currentPostId) || '[]');
+}
+
+function renderComments() {
+  const comments = getComments();
+  const list = document.getElementById('pm-comments-list');
+  document.getElementById('pm-comment-count').textContent = comments.length;
+  if (!comments.length) {
+    list.innerHTML = '<p style="font-size:14px;color:var(--muted2);text-align:center;padding:8px 0;">첫 댓글을 남겨보세요!</p>';
+    return;
+  }
+  list.innerHTML = comments.map((c, i) => `
+    <div class="comment-item">
+      <div class="comment-header">
+        <span style="font-size:13px;font-weight:700;color:var(--ink2);">${safeHtml(c.author)}</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="mono" style="font-size:11px;color:var(--muted2);">${c.date}</span>
+          <button class="comment-del-btn" onclick="deleteComment(${i})">삭제</button>
+        </div>
+      </div>
+      <p style="font-size:14px;line-height:1.7;color:var(--muted);margin:0;">${safeHtml(c.text)}</p>
+    </div>
+  `).join('');
+}
+
+function submitComment() {
+  const author = document.getElementById('ci-author').value.trim();
+  const pwd    = document.getElementById('ci-password').value.trim();
+  const text   = document.getElementById('ci-text').value.trim();
+  if (!author || !text) { alert('닉네임과 댓글 내용을 입력해 주세요.'); return; }
+
+  const comments = getComments();
+  const now = new Date();
+  const date = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+  comments.push({ author, pwd, text, date });
+  localStorage.setItem('ilsim_cmt_' + currentPostId, JSON.stringify(comments));
+
+  document.getElementById('ci-author').value   = '';
+  document.getElementById('ci-password').value = '';
+  document.getElementById('ci-text').value     = '';
+  renderComments();
+}
+
+function deleteComment(idx) {
+  const comments = getComments();
+  const target   = comments[idx];
+  if (target.pwd) {
+    const input = prompt('비밀번호를 입력해 주세요.');
+    if (input === null) return;
+    if (input !== target.pwd) { alert('비밀번호가 일치하지 않습니다.'); return; }
+  }
+  comments.splice(idx, 1);
+  localStorage.setItem('ilsim_cmt_' + currentPostId, JSON.stringify(comments));
+  renderComments();
 }
 
 renderPosts();
