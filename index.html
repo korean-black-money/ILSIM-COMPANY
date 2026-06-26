@@ -733,6 +733,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
   .product-add-form .full{grid-column:1;}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 </head>
 <body>
 
@@ -1766,6 +1767,28 @@ footer{background:var(--ink);padding:60px 0 38px;}
             <div class="admin-stat-sub">개</div>
           </div>
         </div>
+        <!-- 차트 섹션 -->
+        <div class="admin-card">
+          <div class="admin-card-title" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>매출 &amp; 방문자 현황</span>
+            <div style="display:flex;gap:4px;">
+              <button onclick="setChartPeriod('daily')" id="cpb-daily" class="admin-filter-btn active" style="font-size:11px;padding:4px 12px;">일간</button>
+              <button onclick="setChartPeriod('weekly')" id="cpb-weekly" class="admin-filter-btn" style="font-size:11px;padding:4px 12px;">주간</button>
+              <button onclick="setChartPeriod('monthly')" id="cpb-monthly" class="admin-filter-btn" style="font-size:11px;padding:4px 12px;">월간</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px;">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:#888;margin-bottom:8px;">매출 (원)</div>
+              <div style="position:relative;height:180px;"><canvas id="chart-sales"></canvas></div>
+            </div>
+            <div>
+              <div style="font-size:12px;font-weight:600;color:#888;margin-bottom:8px;">방문자수</div>
+              <div id="chart-visitors-wrap" style="position:relative;height:180px;"><canvas id="chart-visitors"></canvas></div>
+            </div>
+          </div>
+        </div>
+
         <!-- GA 실시간 섹션 -->
         <div class="admin-card" id="ga-realtime-card">
           <div class="admin-card-title">
@@ -2851,12 +2874,171 @@ function adminLogin(e) {
 const GA_WORKER_URL = 'https://ilsim-ga-proxy2.eunalove1221.workers.dev';
 const GA_SECRET = 'ilsim-ga-2026';
 
+let salesChartInst = null;
+let visitorChartInst = null;
+let currentChartPeriod = 'daily';
+
 function showAdminDashboard() {
   document.getElementById('admin-login').style.display = 'none';
   document.getElementById('admin-panel').style.display = 'flex';
   loadAdminStats();
   loadDashboardRecent();
   loadGAStats();
+  setTimeout(() => loadCharts('daily'), 100);
+}
+
+/* ===== 차트 ===== */
+function setChartPeriod(period) {
+  currentChartPeriod = period;
+  ['daily','weekly','monthly'].forEach(p => {
+    const b = document.getElementById('cpb-' + p);
+    if (b) b.classList.toggle('active', p === period);
+  });
+  loadCharts(period);
+}
+
+function loadCharts(period) {
+  renderSalesChart(period);
+  renderVisitorChart(period);
+}
+
+function isoWeekKey(date) {
+  const d = new Date(date);
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const w1 = new Date(d.getFullYear(), 0, 4);
+  const wn = 1 + Math.round(((d - w1) / 86400000 - 3 + (w1.getDay() + 6) % 7) / 7);
+  return `${d.getFullYear()}-W${String(wn).padStart(2,'0')}`;
+}
+
+function renderSalesChart(period) {
+  const orders = JSON.parse(localStorage.getItem('ilsim_orders') || '[]');
+  const now = new Date();
+  const labels = [], dataMap = {};
+
+  if (period === 'daily') {
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now); d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0,10);
+      labels.push(`${d.getMonth()+1}/${d.getDate()}`);
+      dataMap[key] = 0;
+    }
+    orders.forEach(o => {
+      if (!o.datetime) return;
+      const key = new Date(o.datetime).toISOString().slice(0,10);
+      if (key in dataMap) dataMap[key] += o.total || 0;
+    });
+  } else if (period === 'weekly') {
+    const seen = new Set();
+    for (let i = 7; i >= 0; i--) {
+      const d = new Date(now); d.setDate(d.getDate() - i * 7);
+      const key = isoWeekKey(d);
+      if (!seen.has(key)) {
+        seen.add(key);
+        labels.push(key.replace(/\d{4}-/, ''));
+        dataMap[key] = 0;
+      }
+    }
+    orders.forEach(o => {
+      if (!o.datetime) return;
+      const key = isoWeekKey(new Date(o.datetime));
+      if (key in dataMap) dataMap[key] += o.total || 0;
+    });
+  } else {
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now); d.setDate(1); d.setMonth(d.getMonth() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      labels.push(`${String(d.getMonth()+1).padStart(2,'0')}월`);
+      dataMap[key] = 0;
+    }
+    orders.forEach(o => {
+      if (!o.datetime) return;
+      const d = new Date(o.datetime);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      if (key in dataMap) dataMap[key] += o.total || 0;
+    });
+  }
+
+  const values = Object.values(dataMap);
+  const ctx = document.getElementById('chart-sales');
+  if (!ctx) return;
+  if (salesChartInst) { salesChartInst.destroy(); salesChartInst = null; }
+  salesChartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: 'rgba(139,90,43,0.75)',
+        borderColor: '#8b5a2b',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => c.raw.toLocaleString() + '원' } }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => (v >= 10000 ? Math.round(v/10000)+'만' : v.toLocaleString()) } }
+      }
+    }
+  });
+}
+
+async function renderVisitorChart(period) {
+  const wrap = document.getElementById('chart-visitors-wrap');
+  const cvs  = document.getElementById('chart-visitors');
+  if (!wrap || !cvs) return;
+
+  try {
+    const res  = await fetch(`${GA_WORKER_URL}?secret=${GA_SECRET}&type=history&period=${period}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    let labels, values;
+    if (period === 'daily') {
+      labels = (data.rows || []).map(r => {
+        const s = r.label;
+        return `${parseInt(s.slice(4,6))}/${parseInt(s.slice(6,8))}`;
+      });
+    } else if (period === 'weekly') {
+      labels = (data.rows || []).map(r => 'W' + r.label.slice(-2));
+    } else {
+      labels = (data.rows || []).map(r => `${r.label.slice(4,6)}월`);
+    }
+    values = (data.rows || []).map(r => r.value);
+
+    if (visitorChartInst) { visitorChartInst.destroy(); visitorChartInst = null; }
+    wrap.innerHTML = '<canvas id="chart-visitors"></canvas>';
+    const newCtx = document.getElementById('chart-visitors');
+    visitorChartInst = new Chart(newCtx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          borderColor: '#2e7d32',
+          backgroundColor: 'rgba(46,125,50,0.1)',
+          borderWidth: 2,
+          tension: 0.3,
+          fill: true,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      }
+    });
+  } catch(e) {
+    if (visitorChartInst) { visitorChartInst.destroy(); visitorChartInst = null; }
+    wrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#bbb;font-size:12px;">방문자 데이터 없음</div>';
+  }
 }
 
 async function loadGAStats() {
@@ -2928,7 +3110,7 @@ function showAdminSection(sec) {
   if (sec === 'orders') loadAdminOrders('all');
   if (sec === 'products') loadAdminProducts();
   if (sec === 'posts') loadAdminPosts();
-  if (sec === 'dashboard') { loadAdminStats(); loadDashboardRecent(); loadGAStats(); }
+  if (sec === 'dashboard') { loadAdminStats(); loadDashboardRecent(); loadGAStats(); setTimeout(() => loadCharts(currentChartPeriod), 100); }
 }
 
 /* ----- 통계 ----- */
