@@ -1803,6 +1803,7 @@ footer{background:var(--ink);padding:60px 0 38px;}
                 <div style="font-size:12px;color:#555;margin-top:4px;">현재 접속자</div>
               </div>
               <div style="font-size:11px;color:#aaa;" id="ga-updated-at"></div>
+              <div style="font-size:11px;color:#bbb;" id="ga-next-refresh"></div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
               <div>
@@ -2877,6 +2878,33 @@ const GA_SECRET = 'ilsim-ga-2026';
 let salesChartInst = null;
 let visitorChartInst = null;
 let currentChartPeriod = 'daily';
+let gaAutoRefreshTimer = null;
+
+let gaCountdownTimer = null;
+let gaCountdownSec = 30;
+
+function startGAAutoRefresh() {
+  stopGAAutoRefresh();
+  gaCountdownSec = 30;
+  gaAutoRefreshTimer = setInterval(() => {
+    const dashActive = document.getElementById('asec-dashboard') &&
+      document.getElementById('asec-dashboard').classList.contains('active');
+    if (!dashActive) return;
+    gaCountdownSec--;
+    const el = document.getElementById('ga-next-refresh');
+    if (el) el.textContent = `다음 갱신: ${gaCountdownSec}초 후`;
+    if (gaCountdownSec <= 0) {
+      gaCountdownSec = 30;
+      loadGAStats();
+      renderVisitorChart(currentChartPeriod);
+    }
+  }, 1000);
+}
+
+function stopGAAutoRefresh() {
+  if (gaAutoRefreshTimer) { clearInterval(gaAutoRefreshTimer); gaAutoRefreshTimer = null; }
+  gaCountdownSec = 30;
+}
 
 function showAdminDashboard() {
   document.getElementById('admin-login').style.display = 'none';
@@ -2885,6 +2913,7 @@ function showAdminDashboard() {
   loadDashboardRecent();
   loadGAStats();
   setTimeout(() => loadCharts('daily'), 100);
+  startGAAutoRefresh();
 }
 
 /* ===== 차트 ===== */
@@ -3091,6 +3120,7 @@ async function loadGAStats() {
 }
 
 function adminLogout() {
+  stopGAAutoRefresh();
   adminAuthed = false;
   document.getElementById('admin-panel').style.display = 'none';
   document.getElementById('admin-login').style.display = 'flex';
