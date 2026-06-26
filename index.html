@@ -1028,8 +1028,8 @@ footer{background:var(--ink);padding:60px 0 38px;}
         <div class="mono" style="font-size:11px;letter-spacing:0.1em;color:var(--muted2);margin-bottom:28px;"><span onclick="goPage('about')" style="cursor:pointer;color:var(--accent);">홈</span> / 제품 / <span style="color:var(--ink2);">무화과 게코사료</span></div>
         <div class="prod-grid">
           <div>
-            <div class="prod-img" style="padding:0;overflow:hidden;">
-              <img src="images/gecko-product.png" alt="무화과 게코사료" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">
+            <div class="prod-img" id="gecko-img-wrap" style="padding:0;overflow:hidden;">
+              <img id="gecko-main-img" src="images/gecko-product.png" alt="무화과 게코사료" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">
               <div style="position:absolute;top:20px;left:20px;width:72px;height:72px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;rotate:-8deg;background:var(--bg);">
                 <span class="serif" style="font-size:12px;font-weight:700;color:var(--accent);text-align:center;line-height:1.3;">BEST<br>選</span>
               </div>
@@ -1043,8 +1043,8 @@ footer{background:var(--ink);padding:60px 0 38px;}
           </div>
           <div>
             <span class="prod-badge mono">압해도 무화과 22% 함유</span>
-            <h1 class="serif" style="font-size:40px;font-weight:700;color:var(--ink);margin:18px 0 0;">무화과 게코사료</h1>
-            <p style="font-size:16.5px;color:var(--muted);margin:12px 0 0;line-height:1.7;">완숙 무화과와 정밀 영양 배합으로 완성한 크레스티드 게코 전용 사료</p>
+            <h1 id="gecko-name" class="serif" style="font-size:40px;font-weight:700;color:var(--ink);margin:18px 0 0;">무화과 게코사료</h1>
+            <p id="gecko-desc" style="font-size:16.5px;color:var(--muted);margin:12px 0 0;line-height:1.7;">완숙 무화과와 정밀 영양 배합으로 완성한 크레스티드 게코 전용 사료</p>
             <div class="price-row">
               <span id="sel-price" class="price-main serif">18,000원</span>
             </div>
@@ -1080,8 +1080,8 @@ footer{background:var(--ink);padding:60px 0 38px;}
               <span class="mono" id="sel-name" style="font-size:12px;color:var(--muted2);">기본형 60g</span>
             </div>
             <div class="buy-row">
-              <button class="buy-btn">바로 구매</button>
-              <button class="cart-btn" onclick="addGeckoToCart()">장바구니</button>
+              <button id="gecko-buy-btn" class="buy-btn">바로 구매</button>
+              <button id="gecko-cart-btn" class="cart-btn" onclick="addGeckoToCart()">장바구니</button>
             </div>
             <div class="shipping-row">
               <span class="mono" style="font-size:12px;color:var(--muted);">당일출고 · 평일 14시 이전</span>
@@ -1183,8 +1183,8 @@ footer{background:var(--ink);padding:60px 0 38px;}
         <div class="prod-grid">
           <!-- 썸네일 -->
           <div>
-            <div class="prod-img" style="padding:0;overflow:hidden;">
-              <img src="images/fig-honey-thumb.jpeg" alt="압해도 꿀 무화과" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">
+            <div class="prod-img" id="honey-img-wrap" style="padding:0;overflow:hidden;">
+              <img id="honey-main-img" src="images/fig-honey-thumb.jpeg" alt="압해도 꿀 무화과" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">
               <div style="position:absolute;top:20px;left:20px;width:72px;height:72px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;rotate:-8deg;background:var(--bg);">
                 <span class="serif" style="font-size:11px;font-weight:700;color:var(--accent);text-align:center;line-height:1.4;">당일<br>수확</span>
               </div>
@@ -1201,8 +1201,8 @@ footer{background:var(--ink);padding:60px 0 38px;}
           <!-- 제품 정보 -->
           <div>
             <span class="prod-badge mono">당일수확 · 당일발송</span>
-            <h1 class="serif" style="font-size:40px;font-weight:700;color:var(--ink);margin:18px 0 0;">압해도 꿀 무화과</h1>
-            <p style="font-size:16.5px;color:var(--muted);margin:12px 0 0;line-height:1.7;">20년 전통 농가에서 직접 재배한 최고 당도 20브릭스 무화과.<br>새벽 이슬을 머금은 채 수확 즉시 발송합니다.</p>
+            <h1 id="honey-name" class="serif" style="font-size:40px;font-weight:700;color:var(--ink);margin:18px 0 0;">압해도 꿀 무화과</h1>
+            <p id="honey-desc" style="font-size:16.5px;color:var(--muted);margin:12px 0 0;line-height:1.7;">20년 전통 농가에서 직접 재배한 최고 당도 20브릭스 무화과.<br>새벽 이슬을 머금은 채 수확 즉시 발송합니다.</p>
 
             <div class="price-row">
               <span id="honey-price" class="price-main serif">18,000원</span>
@@ -1254,8 +1254,8 @@ footer{background:var(--ink);padding:60px 0 38px;}
             </div>
 
             <div class="buy-row">
-              <button class="buy-btn" onclick="handleHoneyOrder()">바로 구매</button>
-              <button class="cart-btn" onclick="handleHoneyCart()">장바구니</button>
+              <button id="honey-buy-btn" class="buy-btn" onclick="handleHoneyOrder()">바로 구매</button>
+              <button id="honey-cart-btn" class="cart-btn" onclick="handleHoneyCart()">장바구니</button>
             </div>
 
             <div class="shipping-row">
@@ -3304,6 +3304,7 @@ function saveEditProduct(e) {
     }
     closeEditProduct();
     loadAdminProducts();
+    applySystemProductOverrides();
     showToast('"' + newName + '" 상품이 수정되었습니다.');
 
   } else {
@@ -3469,8 +3470,61 @@ function addAdminPost(e) {
   showToast('"' + post.title + '" 게시물이 등록되었습니다.');
 }
 
+/* ===== 상품 페이지 동기화 ===== */
+function applySystemProductOverrides() {
+  const overrides = JSON.parse(localStorage.getItem('ilsim_system_products') || '{}');
+
+  [
+    { key: 'sys-gecko', prefix: 'gecko', def: systemProductDefaults[0] },
+    { key: 'sys-honey', prefix: 'honey', def: systemProductDefaults[1] }
+  ].forEach(({ key, prefix, def }) => {
+    const p = { ...def, ...(overrides[key] || {}) };
+
+    // 이름
+    const nameEl = document.getElementById(prefix + '-name');
+    if (nameEl) nameEl.textContent = p.name;
+
+    // 설명
+    const descEl = document.getElementById(prefix + '-desc');
+    if (descEl) descEl.textContent = p.desc;
+
+    // 메인 이미지
+    if (p.imageUrl) {
+      const imgEl = document.getElementById(prefix + '-main-img');
+      if (imgEl) imgEl.src = p.imageUrl;
+    }
+
+    // 재고 상태 배지 & 버튼 비활성화
+    const imgWrap = document.getElementById(prefix + '-img-wrap');
+    const buyBtn  = document.getElementById(prefix + '-buy-btn');
+    const cartBtn = document.getElementById(prefix + '-cart-btn');
+    const existBadge = document.getElementById(prefix + '-stock-badge');
+    if (existBadge) existBadge.remove();
+
+    if (p.stock !== 'available') {
+      if (imgWrap) {
+        const badge = document.createElement('div');
+        badge.id = prefix + '-stock-badge';
+        badge.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:2;border-radius:inherit;pointer-events:none;';
+        badge.innerHTML = `<span style="font-family:'Gowun Batang',serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:.06em;text-shadow:0 2px 8px rgba(0,0,0,.4);">${p.stockLabel}</span>`;
+        imgWrap.appendChild(badge);
+      }
+      if (p.stock === 'soldout') {
+        [buyBtn, cartBtn].forEach(btn => {
+          if (btn) { btn.disabled = true; btn.style.cssText += 'opacity:.35;cursor:not-allowed;'; }
+        });
+      }
+    } else {
+      [buyBtn, cartBtn].forEach(btn => {
+        if (btn) { btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = ''; }
+      });
+    }
+  });
+}
+
 // 페이지 로드 시 URL 해시로 관리자 접근
 (function() {
+  applySystemProductOverrides();
   if (location.hash === '#admin') {
     goPage('admin');
   }
