@@ -1861,28 +1861,10 @@ footer{background:var(--ink);padding:60px 0 38px;}
         <!-- 기본 상품 목록 -->
         <div class="admin-card">
           <div class="admin-card-title">
-            기본 상품 <span style="font-size:12px;font-weight:400;color:#999;">(시스템 고정)</span>
+            기본 상품
+            <span style="font-size:12px;font-weight:400;color:#999;">수정 내용은 관리자 패널에 반영됩니다</span>
           </div>
-          <div class="product-list-grid">
-            <div class="product-admin-card">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                <div class="p-name">일심 게코사료</div>
-                <span class="product-system-badge">SYSTEM</span>
-              </div>
-              <div class="p-price">38,000원</div>
-              <div class="p-cat">gecko · 기본 상품</div>
-              <div class="p-desc">압해도 신선 무화과 100% 원료. 게코도마뱀 전용 프리미엄 사료.</div>
-            </div>
-            <div class="product-admin-card">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                <div class="p-name">압해도 꿀 무화과</div>
-                <span class="product-system-badge">SYSTEM</span>
-              </div>
-              <div class="p-price">18,000원~</div>
-              <div class="p-cat">fig · 기본 상품</div>
-              <div class="p-desc">당일 수확 완숙 무화과. 60g / 100g / 200g / 500g 옵션.</div>
-            </div>
-          </div>
+          <div class="product-list-grid" id="system-product-list"></div>
         </div>
 
         <!-- 추가 상품 목록 -->
@@ -3093,6 +3075,7 @@ function removeAdminProduct(id) {
 }
 
 function loadAdminProducts() {
+  loadSystemProducts();
   const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
   const container = document.getElementById('custom-product-list');
   if (!products.length) {
@@ -3123,12 +3106,72 @@ function loadAdminProducts() {
 
 /* ===== 상품 수정 모달 ===== */
 let editingProductId = null;
+let editingProductType = null; // 'system' | 'custom'
 let pendingEditImageDataUrl = null;
 let editImageRemoved = false;
 
+/* 기본 상품 기본값 */
+const systemProductDefaults = [
+  {
+    id: 'sys-gecko',
+    name: '일심 게코사료',
+    price: '38,000원',
+    category: 'gecko', categoryLabel: '게코 사료',
+    stock: 'available', stockLabel: '판매중',
+    desc: '압해도 신선 무화과 100% 원료. 게코도마뱀 전용 프리미엄 사료.',
+    imageUrl: 'images/gecko-product.png'
+  },
+  {
+    id: 'sys-honey',
+    name: '압해도 꿀 무화과',
+    price: '18,000원~',
+    category: 'fig', categoryLabel: '무화과 제품',
+    stock: 'available', stockLabel: '판매중',
+    desc: '당일 수확 완숙 무화과. 60g / 100g / 200g / 500g 옵션.',
+    imageUrl: 'images/fig-honey-thumb.jpeg'
+  }
+];
+
+function getSystemProducts() {
+  const overrides = JSON.parse(localStorage.getItem('ilsim_system_products') || '{}');
+  return systemProductDefaults.map(p => ({ ...p, ...(overrides[p.id] || {}) }));
+}
+
+function loadSystemProducts() {
+  const products = getSystemProducts();
+  const stockColor = {available:'#2e7d32', soldout:'#c62828', preparing:'#e65100'};
+  const container = document.getElementById('system-product-list');
+  container.innerHTML = products.map(p => `
+    <div class="product-admin-card">
+      ${p.imageUrl
+        ? `<img class="p-img" src="${p.imageUrl}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+           <div class="p-img-placeholder" style="display:none;">🌿</div>`
+        : `<div class="p-img-placeholder">🌿</div>`}
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <div class="p-name">${p.name}</div>
+        <span class="product-system-badge">SYSTEM</span>
+      </div>
+      <div class="p-price">${p.price}</div>
+      <div class="p-cat">${p.categoryLabel} · <span style="color:${stockColor[p.stock]||'#666'}">${p.stockLabel}</span></div>
+      ${p.desc ? `<div class="p-desc">${p.desc}</div>` : ''}
+      <div class="p-actions" style="margin-top:12px;">
+        <button class="p-toggle-btn" onclick="openEditProduct('${p.id}')">수정</button>
+      </div>
+    </div>
+  `).join('');
+}
+
 function openEditProduct(id) {
-  const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
-  const p = products.find(x => x.id === id);
+  // 시스템 상품인지 커스텀 상품인지 판별
+  let p = null;
+  if (id.startsWith('sys-')) {
+    p = getSystemProducts().find(x => x.id === id);
+    editingProductType = 'system';
+  } else {
+    const customs = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+    p = customs.find(x => x.id === id);
+    editingProductType = 'custom';
+  }
   if (!p) return;
 
   editingProductId = id;
@@ -3142,7 +3185,6 @@ function openEditProduct(id) {
   document.getElementById('edit-p-desc').value = p.desc || '';
   document.getElementById('edit-image-file').value = '';
 
-  // 이미지 상태 초기화
   if (p.imageUrl) {
     document.getElementById('edit-img-current-preview').src = p.imageUrl;
     document.getElementById('edit-img-current-wrap').style.display = 'block';
@@ -3161,6 +3203,7 @@ function closeEditProduct() {
   document.getElementById('product-edit-overlay').classList.remove('open');
   document.body.style.overflow = '';
   editingProductId = null;
+  editingProductType = null;
   pendingEditImageDataUrl = null;
   editImageRemoved = false;
 }
@@ -3192,8 +3235,13 @@ function cancelEditNewImage() {
   document.getElementById('edit-image-file').value = '';
   document.getElementById('edit-new-preview-wrap').style.display = 'none';
   // 기존 이미지가 있었으면 다시 보여줌
-  const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
-  const p = products.find(x => x.id === editingProductId);
+  let p = null;
+  if (editingProductType === 'system') {
+    p = getSystemProducts().find(x => x.id === editingProductId);
+  } else {
+    const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+    p = products.find(x => x.id === editingProductId);
+  }
   if (p && p.imageUrl && !editImageRemoved) {
     document.getElementById('edit-img-current-wrap').style.display = 'block';
   } else {
@@ -3228,38 +3276,68 @@ function saveEditProduct(e) {
   const stockMap = {available:'판매중',soldout:'품절',preparing:'준비중'};
   const cat = document.getElementById('edit-p-category').value;
   const stock = document.getElementById('edit-p-stock').value;
+  const newName = document.getElementById('edit-p-name').value.trim();
 
-  let products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
-  const idx = products.findIndex(x => x.id === editingProductId);
-  if (idx === -1) return;
+  if (editingProductType === 'system') {
+    // 기본 상품: overrides 객체에 저장
+    const existing = getSystemProducts().find(x => x.id === editingProductId) || {};
+    let newImageUrl = existing.imageUrl || '';
+    if (pendingEditImageDataUrl) newImageUrl = pendingEditImageDataUrl;
+    if (editImageRemoved) newImageUrl = '';
 
-  const existing = products[idx];
-  let newImageUrl = existing.imageUrl || '';
-  if (pendingEditImageDataUrl) newImageUrl = pendingEditImageDataUrl;
-  if (editImageRemoved) newImageUrl = '';
+    const overrides = JSON.parse(localStorage.getItem('ilsim_system_products') || '{}');
+    overrides[editingProductId] = {
+      name: newName,
+      price: document.getElementById('edit-p-price').value.trim(),
+      category: cat,
+      categoryLabel: catMap[cat],
+      stock: stock,
+      stockLabel: stockMap[stock],
+      desc: document.getElementById('edit-p-desc').value.trim(),
+      imageUrl: newImageUrl,
+    };
+    try {
+      localStorage.setItem('ilsim_system_products', JSON.stringify(overrides));
+    } catch(err) {
+      alert('저장 공간이 부족합니다. 이미지 크기를 줄여 주세요.');
+      return;
+    }
+    closeEditProduct();
+    loadAdminProducts();
+    showToast('"' + newName + '" 상품이 수정되었습니다.');
 
-  products[idx] = {
-    ...existing,
-    name: document.getElementById('edit-p-name').value.trim(),
-    price: document.getElementById('edit-p-price').value.trim(),
-    category: cat,
-    categoryLabel: catMap[cat],
-    stock: stock,
-    stockLabel: stockMap[stock],
-    desc: document.getElementById('edit-p-desc').value.trim(),
-    imageUrl: newImageUrl,
-  };
+  } else {
+    // 추가 상품: ilsim_custom_products 배열 업데이트
+    let products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+    const idx = products.findIndex(x => x.id === editingProductId);
+    if (idx === -1) return;
 
-  try {
-    localStorage.setItem('ilsim_custom_products', JSON.stringify(products));
-  } catch(err) {
-    alert('저장 공간이 부족합니다. 이미지 크기를 줄이거나 다른 상품을 삭제해 주세요.');
-    return;
+    const existing = products[idx];
+    let newImageUrl = existing.imageUrl || '';
+    if (pendingEditImageDataUrl) newImageUrl = pendingEditImageDataUrl;
+    if (editImageRemoved) newImageUrl = '';
+
+    products[idx] = {
+      ...existing,
+      name: newName,
+      price: document.getElementById('edit-p-price').value.trim(),
+      category: cat,
+      categoryLabel: catMap[cat],
+      stock: stock,
+      stockLabel: stockMap[stock],
+      desc: document.getElementById('edit-p-desc').value.trim(),
+      imageUrl: newImageUrl,
+    };
+    try {
+      localStorage.setItem('ilsim_custom_products', JSON.stringify(products));
+    } catch(err) {
+      alert('저장 공간이 부족합니다. 이미지 크기를 줄이거나 다른 상품을 삭제해 주세요.');
+      return;
+    }
+    closeEditProduct();
+    loadAdminProducts();
+    showToast('"' + newName + '" 상품이 수정되었습니다.');
   }
-
-  closeEditProduct();
-  loadAdminProducts();
-  showToast('"' + products[idx].name + '" 상품이 수정되었습니다.');
 }
 
 /* ===== 게시물 관리 ===== */
