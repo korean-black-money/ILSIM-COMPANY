@@ -626,6 +626,34 @@ footer{background:var(--ink);padding:60px 0 38px;}
 
 .admin-order-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px;display:none;}
 .admin-order-detail-box{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;padding:32px;}
+.edit-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:5100;display:none;align-items:center;justify-content:center;padding:20px;}
+.edit-modal-overlay.open{display:flex;}
+.edit-modal-box{background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;padding:32px;}
+.edit-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.edit-modal-title{font-family:'Gowun Batang',serif;font-size:20px;font-weight:700;color:#1a2332;}
+.edit-modal-close{border:none;background:none;font-size:22px;cursor:pointer;color:#aaa;line-height:1;padding:4px;}
+.edit-modal-close:hover{color:#333;}
+.edit-field{margin-bottom:16px;}
+.edit-field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.edit-label{font-size:11px;font-family:ui-monospace,monospace;color:#999;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:5px;}
+.edit-input{width:100%;border:1.5px solid #e0e0e0;border-radius:8px;padding:10px 12px;font-size:14px;box-sizing:border-box;font-family:'Pretendard',sans-serif;transition:border-color .2s;}
+.edit-input:focus{outline:none;border-color:#5ab4f5;}
+.edit-img-current{position:relative;border-radius:10px;overflow:hidden;background:#f0f0f0;margin-bottom:10px;}
+.edit-img-current img{width:100%;max-height:200px;object-fit:cover;display:block;}
+.edit-img-current-actions{display:flex;gap:8px;padding:10px;}
+.edit-img-action-btn{flex:1;padding:8px;border-radius:6px;font-size:13px;cursor:pointer;font-family:'Pretendard',sans-serif;}
+.edit-img-change-btn{border:1.5px solid #1a2332;background:#fff;color:#1a2332;}
+.edit-img-change-btn:hover{background:#f0f2f5;}
+.edit-img-remove-btn{border:none;background:#ffebee;color:#c62828;}
+.edit-img-remove-btn:hover{background:#e53935;color:#fff;}
+.edit-new-preview{position:relative;border-radius:8px;overflow:hidden;background:#f0f0f0;}
+.edit-new-preview img{width:100%;max-height:160px;object-fit:cover;display:block;}
+.edit-new-preview-label{font-size:11px;color:#5ab4f5;font-family:ui-monospace,monospace;padding:4px 8px;background:#f0f8ff;text-align:center;}
+.edit-new-preview-cancel{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:26px;height:26px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.edit-modal-btns{display:flex;gap:10px;margin-top:24px;}
+.edit-cancel-btn{flex:1;padding:13px;border:1.5px solid #e0e0e0;background:#fff;border-radius:8px;font-size:14px;cursor:pointer;color:#666;}
+.edit-save-btn{flex:2;padding:13px;background:#1a2332;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;}
+.edit-save-btn:hover{background:#2d3e50;}
 
 .product-add-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
 .product-add-form .full{grid-column:1/-1;}
@@ -1957,6 +1985,86 @@ footer{background:var(--ink);padding:60px 0 38px;}
   <div class="admin-order-detail-box" id="order-detail-box"></div>
 </div>
 
+<!-- 상품 수정 모달 -->
+<div class="edit-modal-overlay" id="product-edit-overlay" onclick="handleEditModalBg(event)">
+  <div class="edit-modal-box">
+    <div class="edit-modal-header">
+      <div class="edit-modal-title">상품 수정</div>
+      <button class="edit-modal-close" onclick="closeEditProduct()">✕</button>
+    </div>
+    <form onsubmit="saveEditProduct(event)">
+      <div class="edit-field">
+        <label class="edit-label">상품명 *</label>
+        <input class="edit-input" type="text" id="edit-p-name" required>
+      </div>
+      <div class="edit-field-row">
+        <div>
+          <label class="edit-label">판매가 *</label>
+          <input class="edit-input" type="text" id="edit-p-price" required>
+        </div>
+        <div>
+          <label class="edit-label">카테고리</label>
+          <select class="edit-input" id="edit-p-category">
+            <option value="fig">무화과 제품</option>
+            <option value="gecko">게코 사료</option>
+            <option value="gift">선물세트</option>
+            <option value="other">기타</option>
+          </select>
+        </div>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">재고 상태</label>
+        <select class="edit-input" id="edit-p-stock">
+          <option value="available">판매중</option>
+          <option value="soldout">품절</option>
+          <option value="preparing">준비중</option>
+        </select>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">상품 설명</label>
+        <input class="edit-input" type="text" id="edit-p-desc">
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">상품 이미지</label>
+        <!-- 현재 이미지가 있을 때 -->
+        <div id="edit-img-current-wrap" style="display:none;">
+          <div class="edit-img-current">
+            <img id="edit-img-current-preview" src="" alt="현재 이미지">
+          </div>
+          <div class="edit-img-current-actions">
+            <button type="button" class="edit-img-action-btn edit-img-change-btn" onclick="triggerEditImageUpload()">이미지 변경</button>
+            <button type="button" class="edit-img-action-btn edit-img-remove-btn" onclick="removeEditImage()">이미지 제거</button>
+          </div>
+        </div>
+        <!-- 새 이미지 선택 후 미리보기 -->
+        <div id="edit-new-preview-wrap" style="display:none;">
+          <div class="edit-new-preview">
+            <img id="edit-new-preview-img" src="" alt="새 이미지">
+            <button type="button" class="edit-new-preview-cancel" onclick="cancelEditNewImage()" title="취소">✕</button>
+          </div>
+          <div class="edit-new-preview-label">새 이미지 · <span id="edit-new-img-size"></span></div>
+        </div>
+        <!-- 업로드 영역 (이미지 없을 때) -->
+        <div class="img-upload-zone" id="edit-img-upload-zone" style="display:none;"
+          ondragover="handleImgDragOver2(event)"
+          ondragleave="handleImgDragLeave2(event)"
+          ondrop="handleEditImgDrop(event)">
+          <input type="file" accept="image/*" id="edit-image-file" onchange="handleEditImageSelect(this)">
+          <div class="img-upload-icon">🖼️</div>
+          <div class="img-upload-text">
+            <strong>클릭하거나 이미지를 드래그하세요</strong>
+            <span>JPG, PNG, WEBP · 자동 압축 적용</span>
+          </div>
+        </div>
+      </div>
+      <div class="edit-modal-btns">
+        <button type="button" class="edit-cancel-btn" onclick="closeEditProduct()">취소</button>
+        <button type="submit" class="edit-save-btn">저장하기</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 // Page navigation
 function goPage(page) {
@@ -3006,10 +3114,152 @@ function loadAdminProducts() {
       ${p.desc ? `<div class="p-desc">${p.desc}</div>` : ''}
       <div style="font-size:11px;color:#bbb;margin-top:6px;">${p.createdAt} 등록</div>
       <div class="p-actions">
+        <button class="p-toggle-btn" onclick="openEditProduct('${p.id}')">수정</button>
         <button class="p-delete-btn" onclick="removeAdminProduct('${p.id}')">삭제</button>
       </div>
     </div>
   `).join('');
+}
+
+/* ===== 상품 수정 모달 ===== */
+let editingProductId = null;
+let pendingEditImageDataUrl = null;
+let editImageRemoved = false;
+
+function openEditProduct(id) {
+  const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+
+  editingProductId = id;
+  pendingEditImageDataUrl = null;
+  editImageRemoved = false;
+
+  document.getElementById('edit-p-name').value = p.name;
+  document.getElementById('edit-p-price').value = p.price;
+  document.getElementById('edit-p-category').value = p.category;
+  document.getElementById('edit-p-stock').value = p.stock;
+  document.getElementById('edit-p-desc').value = p.desc || '';
+  document.getElementById('edit-image-file').value = '';
+
+  // 이미지 상태 초기화
+  if (p.imageUrl) {
+    document.getElementById('edit-img-current-preview').src = p.imageUrl;
+    document.getElementById('edit-img-current-wrap').style.display = 'block';
+    document.getElementById('edit-img-upload-zone').style.display = 'none';
+  } else {
+    document.getElementById('edit-img-current-wrap').style.display = 'none';
+    document.getElementById('edit-img-upload-zone').style.display = 'block';
+  }
+  document.getElementById('edit-new-preview-wrap').style.display = 'none';
+
+  document.getElementById('product-edit-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEditProduct() {
+  document.getElementById('product-edit-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  editingProductId = null;
+  pendingEditImageDataUrl = null;
+  editImageRemoved = false;
+}
+
+function handleEditModalBg(e) {
+  if (e.target === document.getElementById('product-edit-overlay')) closeEditProduct();
+}
+
+function triggerEditImageUpload() {
+  document.getElementById('edit-image-file').click();
+}
+
+async function handleEditImageSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { alert('10MB 이하 이미지를 선택해 주세요.'); input.value = ''; return; }
+  const dataUrl = await compressImage(file, 900, 0.78);
+  pendingEditImageDataUrl = dataUrl;
+  editImageRemoved = false;
+  document.getElementById('edit-new-preview-img').src = dataUrl;
+  document.getElementById('edit-new-img-size').textContent = getBase64Size(dataUrl);
+  document.getElementById('edit-new-preview-wrap').style.display = 'block';
+  document.getElementById('edit-img-current-wrap').style.display = 'none';
+  document.getElementById('edit-img-upload-zone').style.display = 'none';
+}
+
+function cancelEditNewImage() {
+  pendingEditImageDataUrl = null;
+  document.getElementById('edit-image-file').value = '';
+  document.getElementById('edit-new-preview-wrap').style.display = 'none';
+  // 기존 이미지가 있었으면 다시 보여줌
+  const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+  const p = products.find(x => x.id === editingProductId);
+  if (p && p.imageUrl && !editImageRemoved) {
+    document.getElementById('edit-img-current-wrap').style.display = 'block';
+  } else {
+    document.getElementById('edit-img-upload-zone').style.display = 'block';
+  }
+}
+
+function removeEditImage() {
+  editImageRemoved = true;
+  pendingEditImageDataUrl = null;
+  document.getElementById('edit-image-file').value = '';
+  document.getElementById('edit-img-current-wrap').style.display = 'none';
+  document.getElementById('edit-new-preview-wrap').style.display = 'none';
+  document.getElementById('edit-img-upload-zone').style.display = 'block';
+}
+
+function handleImgDragOver2(e) { e.preventDefault(); document.getElementById('edit-img-upload-zone').classList.add('drag-over'); }
+function handleImgDragLeave2(e) { document.getElementById('edit-img-upload-zone').classList.remove('drag-over'); }
+function handleEditImgDrop(e) {
+  e.preventDefault();
+  document.getElementById('edit-img-upload-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  const input = document.getElementById('edit-image-file');
+  const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
+  handleEditImageSelect(input);
+}
+
+function saveEditProduct(e) {
+  e.preventDefault();
+  const catMap = {fig:'무화과 제품',gecko:'게코 사료',gift:'선물세트',other:'기타'};
+  const stockMap = {available:'판매중',soldout:'품절',preparing:'준비중'};
+  const cat = document.getElementById('edit-p-category').value;
+  const stock = document.getElementById('edit-p-stock').value;
+
+  let products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+  const idx = products.findIndex(x => x.id === editingProductId);
+  if (idx === -1) return;
+
+  const existing = products[idx];
+  let newImageUrl = existing.imageUrl || '';
+  if (pendingEditImageDataUrl) newImageUrl = pendingEditImageDataUrl;
+  if (editImageRemoved) newImageUrl = '';
+
+  products[idx] = {
+    ...existing,
+    name: document.getElementById('edit-p-name').value.trim(),
+    price: document.getElementById('edit-p-price').value.trim(),
+    category: cat,
+    categoryLabel: catMap[cat],
+    stock: stock,
+    stockLabel: stockMap[stock],
+    desc: document.getElementById('edit-p-desc').value.trim(),
+    imageUrl: newImageUrl,
+  };
+
+  try {
+    localStorage.setItem('ilsim_custom_products', JSON.stringify(products));
+  } catch(err) {
+    alert('저장 공간이 부족합니다. 이미지 크기를 줄이거나 다른 상품을 삭제해 주세요.');
+    return;
+  }
+
+  closeEditProduct();
+  loadAdminProducts();
+  showToast('"' + products[idx].name + '" 상품이 수정되었습니다.');
 }
 
 /* ===== 게시물 관리 ===== */
