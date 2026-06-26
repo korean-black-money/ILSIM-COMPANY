@@ -1662,6 +1662,9 @@ footer{background:var(--ink);padding:60px 0 38px;}
         <div class="admin-nav-item" onclick="showAdminSection('products')" id="anav-products">
           <span class="nav-icon">🌿</span> 상품 관리
         </div>
+        <div class="admin-nav-item" onclick="showAdminSection('posts')" id="anav-posts">
+          <span class="nav-icon">📝</span> 게시물 관리
+        </div>
       </div>
       <div class="admin-sidebar-footer">
         <button class="admin-logout-btn" onclick="adminLogout()">로그아웃</button>
@@ -1828,6 +1831,87 @@ footer{background:var(--ink);padding:60px 0 38px;}
           <div class="product-list-grid" id="custom-product-list">
             <div class="admin-empty" style="grid-column:1/-1;">등록된 추가 상품이 없습니다.</div>
           </div>
+        </div>
+      </div>
+
+      <!-- 게시물 관리 섹션 -->
+      <div id="asec-posts" class="admin-section">
+        <div class="admin-page-title">게시물 관리</div>
+
+        <!-- 새 게시물 작성 -->
+        <div class="admin-card">
+          <div class="admin-card-title">새 게시물 작성</div>
+          <form onsubmit="addAdminPost(event)">
+            <div class="product-add-form">
+              <div>
+                <label class="product-form-label">제목 *</label>
+                <input class="product-form-input" type="text" id="post-title" placeholder="게시물 제목" required>
+              </div>
+              <div>
+                <label class="product-form-label">카테고리</label>
+                <select class="product-form-input" id="post-cat">
+                  <option value="사용후기">사용후기</option>
+                  <option value="사육일지">사육일지</option>
+                  <option value="Q&A">Q&amp;A</option>
+                  <option value="이벤트">이벤트</option>
+                </select>
+              </div>
+              <div>
+                <label class="product-form-label">작성자</label>
+                <input class="product-form-input" type="text" id="post-author" placeholder="ILSIM 운영팀" value="ILSIM 운영팀">
+              </div>
+              <div>
+                <label class="product-form-label">썸네일 이미지 URL</label>
+                <input class="product-form-input" type="text" id="post-thumb" placeholder="images/community-1.jpeg (비워두면 기본 이미지)">
+              </div>
+              <div class="full">
+                <label class="product-form-label">내용 *</label>
+                <textarea class="product-form-input" id="post-content" rows="5" placeholder="게시물 내용을 입력하세요. 줄바꿈은 자동으로 단락으로 처리됩니다." required style="resize:vertical;"></textarea>
+              </div>
+              <div class="full" style="text-align:right;">
+                <button type="submit" class="product-add-btn">+ 게시물 등록</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- 기본 게시물 목록 -->
+        <div class="admin-card">
+          <div class="admin-card-title">
+            기존 게시물 <span style="font-size:12px;font-weight:400;color:#999;">(공개/비공개 설정 가능)</span>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width:40px;">번호</th>
+                <th style="width:70px;">카테고리</th>
+                <th>제목</th>
+                <th style="width:100px;">작성자</th>
+                <th style="width:80px;">날짜</th>
+                <th style="width:60px;text-align:center;">좋아요</th>
+                <th style="width:90px;text-align:center;">공개 여부</th>
+              </tr>
+            </thead>
+            <tbody id="system-posts-table"></tbody>
+          </table>
+        </div>
+
+        <!-- 추가 게시물 목록 -->
+        <div class="admin-card">
+          <div class="admin-card-title">등록한 게시물</div>
+          <table class="admin-table" id="custom-posts-table-wrap">
+            <thead>
+              <tr>
+                <th style="width:70px;">카테고리</th>
+                <th>제목</th>
+                <th style="width:100px;">작성자</th>
+                <th style="width:80px;">등록일</th>
+                <th style="width:90px;text-align:center;">공개 여부</th>
+                <th style="width:60px;text-align:center;">삭제</th>
+              </tr>
+            </thead>
+            <tbody id="custom-posts-table"></tbody>
+          </table>
         </div>
       </div>
 
@@ -2023,11 +2107,25 @@ function getLikeCount(post) {
   return postLikes[post.id] !== undefined ? postLikes[post.id] : post.likes;
 }
 
+function getVisiblePosts() {
+  const hidden = JSON.parse(localStorage.getItem('ilsim_hidden_posts') || '[]');
+  const custom = JSON.parse(localStorage.getItem('ilsim_custom_posts') || '[]');
+  const hiddenCustom = JSON.parse(localStorage.getItem('ilsim_hidden_custom_posts') || '[]');
+  const systemVisible = allPosts.filter(p => !hidden.includes(p.id));
+  const customVisible = custom.filter(p => !hiddenCustom.includes(p.id));
+  return [...systemVisible, ...customVisible];
+}
+
 function renderPosts() {
-  const grid  = document.getElementById('posts-grid');
-  const posts = currentTab === '전체' ? allPosts : allPosts.filter(p => p.cat === currentTab);
+  const grid = document.getElementById('posts-grid');
+  let posts = getVisiblePosts();
+  if (currentTab !== '전체') posts = posts.filter(p => p.cat === currentTab);
+  if (!posts.length) {
+    grid.innerHTML = '<p style="text-align:center;color:var(--muted);padding:40px 0;">게시물이 없습니다.</p>';
+    return;
+  }
   grid.innerHTML = posts.map(p => `
-    <div class="post-card" onclick="openPostModal(${p.id})">
+    <div class="post-card" onclick="openPostModal(${JSON.stringify(p.id)})">
       <div class="post-thumb">
         ${p.thumb ? `<img src="${p.thumb}" alt="${p.cat}" loading="lazy">` : ''}
         <span class="mono post-cat">${p.cat}</span>
@@ -2051,8 +2149,13 @@ function selectTab(el, tab) {
 }
 
 // ── 게시글 상세 모달 ──
+function findPost(postId) {
+  const custom = JSON.parse(localStorage.getItem('ilsim_custom_posts') || '[]');
+  return allPosts.find(p => p.id === postId) || custom.find(p => p.id === postId);
+}
+
 function openPostModal(postId) {
-  const post = allPosts.find(p => p.id === postId);
+  const post = findPost(postId);
   if (!post) return;
   currentPostId = postId;
 
@@ -2087,7 +2190,7 @@ function handlePostModalBg(e) {
 
 function togglePostLike() {
   if (!currentPostId) return;
-  const post  = allPosts.find(p => p.id === currentPostId);
+  const post  = findPost(currentPostId);
   const count = getLikeCount(post);
   if (likedPosts[currentPostId]) {
     postLikes[currentPostId] = count - 1;
@@ -2571,6 +2674,7 @@ function showAdminSection(sec) {
   document.getElementById('anav-' + sec).classList.add('active');
   if (sec === 'orders') loadAdminOrders('all');
   if (sec === 'products') loadAdminProducts();
+  if (sec === 'posts') loadAdminPosts();
   if (sec === 'dashboard') { loadAdminStats(); loadDashboardRecent(); }
 }
 
@@ -2788,6 +2892,135 @@ function loadAdminProducts() {
       </div>
     </div>
   `).join('');
+}
+
+/* ===== 게시물 관리 ===== */
+function loadAdminPosts() {
+  loadSystemPostsTable();
+  loadCustomPostsTable();
+}
+
+function loadSystemPostsTable() {
+  const hidden = JSON.parse(localStorage.getItem('ilsim_hidden_posts') || '[]');
+  const tbody = document.getElementById('system-posts-table');
+  tbody.innerHTML = allPosts.map(p => {
+    const isHidden = hidden.includes(p.id);
+    return `
+      <tr style="${isHidden ? 'opacity:.45;' : ''}">
+        <td style="font-family:ui-monospace,monospace;font-size:12px;">${p.id}</td>
+        <td><span class="status-badge" style="background:#e8f5e9;color:#2e7d32;">${p.cat}</span></td>
+        <td style="font-weight:600;max-width:260px;">${p.title}</td>
+        <td style="font-size:13px;color:#666;">${p.author}</td>
+        <td style="font-size:12px;color:#999;white-space:nowrap;">${p.date}</td>
+        <td style="text-align:center;font-size:13px;">♥ ${p.likes}</td>
+        <td style="text-align:center;">
+          <button onclick="toggleSystemPostVisibility(${p.id})"
+            style="padding:5px 12px;border-radius:20px;border:1.5px solid ${isHidden ? '#e0e0e0' : '#1a2332'};
+            background:${isHidden ? '#fff' : '#1a2332'};color:${isHidden ? '#999' : '#fff'};
+            font-size:12px;cursor:pointer;white-space:nowrap;">
+            ${isHidden ? '비공개' : '공개'}
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function loadCustomPostsTable() {
+  const custom = JSON.parse(localStorage.getItem('ilsim_custom_posts') || '[]');
+  const hiddenCustom = JSON.parse(localStorage.getItem('ilsim_hidden_custom_posts') || '[]');
+  const tbody = document.getElementById('custom-posts-table');
+  if (!custom.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="admin-empty" style="padding:32px 0;">등록한 게시물이 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = custom.map(p => {
+    const isHidden = hiddenCustom.includes(p.id);
+    return `
+      <tr style="${isHidden ? 'opacity:.45;' : ''}">
+        <td><span class="status-badge" style="background:#e3f2fd;color:#1565c0;">${p.cat}</span></td>
+        <td style="font-weight:600;max-width:240px;">${p.title}</td>
+        <td style="font-size:13px;color:#666;">${p.author}</td>
+        <td style="font-size:12px;color:#999;white-space:nowrap;">${p.date}</td>
+        <td style="text-align:center;">
+          <button onclick="toggleCustomPostVisibility('${p.id}')"
+            style="padding:5px 12px;border-radius:20px;border:1.5px solid ${isHidden ? '#e0e0e0' : '#1a2332'};
+            background:${isHidden ? '#fff' : '#1a2332'};color:${isHidden ? '#999' : '#fff'};
+            font-size:12px;cursor:pointer;white-space:nowrap;">
+            ${isHidden ? '비공개' : '공개'}
+          </button>
+        </td>
+        <td style="text-align:center;">
+          <button onclick="deleteAdminPost('${p.id}')"
+            style="padding:5px 10px;border:none;border-radius:6px;background:#ffebee;color:#c62828;font-size:12px;cursor:pointer;">
+            삭제
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function toggleSystemPostVisibility(postId) {
+  let hidden = JSON.parse(localStorage.getItem('ilsim_hidden_posts') || '[]');
+  if (hidden.includes(postId)) {
+    hidden = hidden.filter(id => id !== postId);
+  } else {
+    hidden.push(postId);
+  }
+  localStorage.setItem('ilsim_hidden_posts', JSON.stringify(hidden));
+  loadSystemPostsTable();
+  renderPosts();
+}
+
+function toggleCustomPostVisibility(postId) {
+  let hidden = JSON.parse(localStorage.getItem('ilsim_hidden_custom_posts') || '[]');
+  if (hidden.includes(postId)) {
+    hidden = hidden.filter(id => id !== postId);
+  } else {
+    hidden.push(postId);
+  }
+  localStorage.setItem('ilsim_hidden_custom_posts', JSON.stringify(hidden));
+  loadCustomPostsTable();
+  renderPosts();
+}
+
+function deleteAdminPost(postId) {
+  if (!confirm('이 게시물을 삭제하시겠습니까?')) return;
+  let custom = JSON.parse(localStorage.getItem('ilsim_custom_posts') || '[]');
+  custom = custom.filter(p => p.id !== postId);
+  localStorage.setItem('ilsim_custom_posts', JSON.stringify(custom));
+  let hiddenCustom = JSON.parse(localStorage.getItem('ilsim_hidden_custom_posts') || '[]');
+  hiddenCustom = hiddenCustom.filter(id => id !== postId);
+  localStorage.setItem('ilsim_hidden_custom_posts', JSON.stringify(hiddenCustom));
+  loadCustomPostsTable();
+  renderPosts();
+}
+
+function addAdminPost(e) {
+  e.preventDefault();
+  const today = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\. /g,'.').replace('.','.');
+  const rawContent = document.getElementById('post-content').value.trim();
+  const htmlContent = rawContent.split('\n').filter(l => l.trim()).map(l => `<p>${l.trim()}</p>`).join('\n');
+  const post = {
+    id: 'cp-' + Date.now(),
+    cat: document.getElementById('post-cat').value,
+    title: document.getElementById('post-title').value.trim(),
+    thumb: document.getElementById('post-thumb').value.trim() || '',
+    author: document.getElementById('post-author').value.trim() || 'ILSIM 운영팀',
+    date: new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\.\s*/g,'.').replace(/\.$/, ''),
+    likes: 0,
+    cmt: 0,
+    content: htmlContent
+  };
+  const custom = JSON.parse(localStorage.getItem('ilsim_custom_posts') || '[]');
+  custom.unshift(post);
+  localStorage.setItem('ilsim_custom_posts', JSON.stringify(custom));
+  e.target.reset();
+  document.getElementById('post-author').value = 'ILSIM 운영팀';
+  loadAdminPosts();
+  renderPosts();
+  showToast('"' + post.title + '" 게시물이 등록되었습니다.');
 }
 
 // 페이지 로드 시 URL 해시로 관리자 접근
