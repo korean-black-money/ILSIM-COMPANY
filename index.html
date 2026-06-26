@@ -1766,6 +1766,39 @@ footer{background:var(--ink);padding:60px 0 38px;}
             <div class="admin-stat-sub">개</div>
           </div>
         </div>
+        <!-- GA 실시간 섹션 -->
+        <div class="admin-card" id="ga-realtime-card">
+          <div class="admin-card-title">
+            실시간 방문자 (Google Analytics)
+            <button class="admin-filter-btn" onclick="loadGAStats()" id="ga-refresh-btn" style="font-size:12px;padding:5px 12px;">새로고침</button>
+          </div>
+          <div id="ga-loading" style="text-align:center;padding:20px;color:#888;font-size:13px;">불러오는 중...</div>
+          <div id="ga-content" style="display:none;">
+            <div style="display:flex;align-items:center;gap:16px;padding:12px 0 16px;">
+              <div style="background:#e8f5e9;border-radius:12px;padding:12px 24px;text-align:center;">
+                <div style="font-size:36px;font-weight:700;color:#2e7d32;line-height:1;" id="ga-active-users">0</div>
+                <div style="font-size:12px;color:#555;margin-top:4px;">현재 접속자</div>
+              </div>
+              <div style="font-size:11px;color:#aaa;" id="ga-updated-at"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px;">페이지별</div>
+                <div id="ga-by-page" style="font-size:12px;"></div>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px;">기기별</div>
+                <div id="ga-by-device" style="font-size:12px;"></div>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px;">국가별</div>
+                <div id="ga-by-country" style="font-size:12px;"></div>
+              </div>
+            </div>
+          </div>
+          <div id="ga-error" style="display:none;color:#c62828;font-size:13px;padding:12px 0;"></div>
+        </div>
+
         <div class="admin-card">
           <div class="admin-card-title">
             최근 주문
@@ -2815,11 +2848,64 @@ function adminLogin(e) {
   }
 }
 
+const GA_WORKER_URL = 'https://ilsim-ga-proxy2.eunalove1221.workers.dev';
+const GA_SECRET = 'ilsim-ga-2026';
+
 function showAdminDashboard() {
   document.getElementById('admin-login').style.display = 'none';
   document.getElementById('admin-panel').style.display = 'flex';
   loadAdminStats();
   loadDashboardRecent();
+  loadGAStats();
+}
+
+async function loadGAStats() {
+  const loading = document.getElementById('ga-loading');
+  const content = document.getElementById('ga-content');
+  const errEl   = document.getElementById('ga-error');
+  const btn      = document.getElementById('ga-refresh-btn');
+
+  loading.style.display = 'block';
+  content.style.display = 'none';
+  errEl.style.display   = 'none';
+  btn.disabled = true;
+  btn.textContent = '로딩중...';
+
+  try {
+    const res  = await fetch(`${GA_WORKER_URL}?secret=${GA_SECRET}`);
+    const data = await res.json();
+
+    if (data.error) throw new Error(data.error);
+
+    document.getElementById('ga-active-users').textContent = data.activeUsers || 0;
+    document.getElementById('ga-updated-at').textContent =
+      '업데이트: ' + new Date(data.updatedAt).toLocaleTimeString('ko-KR');
+
+    const renderList = (id, rows) => {
+      const el = document.getElementById(id);
+      if (!rows || !rows.length) { el.innerHTML = '<div style="color:#aaa;">데이터 없음</div>'; return; }
+      el.innerHTML = rows.map(r =>
+        `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f0f0f0;">
+          <span style="color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;" title="${r.label}">${r.label}</span>
+          <span style="font-weight:600;color:#1b5e20;margin-left:8px;">${r.value}</span>
+        </div>`
+      ).join('');
+    };
+
+    renderList('ga-by-page',    data.byPage);
+    renderList('ga-by-device',  data.byDevice);
+    renderList('ga-by-country', data.byCountry);
+
+    loading.style.display = 'none';
+    content.style.display = 'block';
+  } catch (e) {
+    loading.style.display = 'none';
+    errEl.style.display   = 'block';
+    errEl.textContent     = '데이터 로드 실패: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '새로고침';
+  }
 }
 
 function adminLogout() {
@@ -2842,7 +2928,7 @@ function showAdminSection(sec) {
   if (sec === 'orders') loadAdminOrders('all');
   if (sec === 'products') loadAdminProducts();
   if (sec === 'posts') loadAdminPosts();
-  if (sec === 'dashboard') { loadAdminStats(); loadDashboardRecent(); }
+  if (sec === 'dashboard') { loadAdminStats(); loadDashboardRecent(); loadGAStats(); }
 }
 
 /* ----- 통계 ----- */
