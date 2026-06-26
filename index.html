@@ -662,6 +662,23 @@ footer{background:var(--ink);padding:60px 0 38px;}
 .product-form-input:focus{outline:none;border-color:#5ab4f5;}
 .product-add-btn{background:#1a2332;color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;}
 .product-add-btn:hover{background:#2d3e50;}
+.opt-mode-toggle{display:flex;gap:6px;margin-bottom:10px;}
+.opt-mode-btn{flex:1;padding:8px 12px;border:1.5px solid #e0e0e0;background:#fff;border-radius:8px;font-size:13px;cursor:pointer;color:#666;transition:all .15s;font-family:'Pretendard',sans-serif;}
+.opt-mode-btn.active{border-color:#1a2332;background:#1a2332;color:#fff;}
+.opt-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;min-height:4px;}
+.opt-row{display:grid;grid-template-columns:1fr 130px 32px;gap:8px;align-items:center;}
+.opt-row-input{border:1.5px solid #e0e0e0;border-radius:8px;padding:9px 10px;font-size:13px;width:100%;box-sizing:border-box;font-family:'Pretendard',sans-serif;transition:border-color .2s;}
+.opt-row-input:focus{outline:none;border-color:#5ab4f5;}
+.opt-row-del{width:32px;height:32px;border:none;background:#ffebee;border-radius:6px;color:#c62828;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;line-height:1;}
+.opt-row-del:hover{background:#c62828;color:#fff;}
+.opt-add-row-btn{width:100%;padding:9px;border:1.5px dashed #c8d4e8;background:#f7f9fc;border-radius:8px;font-size:13px;color:#5ab4f5;cursor:pointer;font-family:'Pretendard',sans-serif;transition:all .15s;}
+.opt-add-row-btn:hover{border-color:#5ab4f5;background:#eef6ff;}
+.opt-col-header{display:grid;grid-template-columns:1fr 130px 32px;gap:8px;font-size:10px;font-family:ui-monospace,monospace;color:#bbb;letter-spacing:.05em;text-transform:uppercase;padding:0 2px;margin-bottom:4px;}
+.p-options-list{margin-top:6px;border-top:1px solid #f0f0f0;padding-top:6px;}
+.p-option-row-display{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px dashed #f4f4f4;color:#555;}
+.p-option-row-display:last-child{border-bottom:none;}
+.p-option-row-display .opt-n{color:#666;}
+.p-option-row-display .opt-p{font-weight:700;color:var(--accent);}
 .img-upload-zone{border:2px dashed #d0d5dd;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:#fafbfc;position:relative;}
 .img-upload-zone:hover,.img-upload-zone.drag-over{border-color:#5ab4f5;background:#f0f8ff;}
 .img-upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
@@ -1809,10 +1826,6 @@ footer{background:var(--ink);padding:60px 0 38px;}
               <input class="product-form-input" type="text" id="p-name" placeholder="예: 무화과 잼 100g" required>
             </div>
             <div>
-              <label class="product-form-label">판매가 *</label>
-              <input class="product-form-input" type="text" id="p-price" placeholder="예: 12,000원" required>
-            </div>
-            <div>
               <label class="product-form-label">카테고리</label>
               <select class="product-form-input" id="p-category">
                 <option value="fig">무화과 제품</option>
@@ -1828,6 +1841,21 @@ footer{background:var(--ink);padding:60px 0 38px;}
                 <option value="soldout">품절</option>
                 <option value="preparing">준비중</option>
               </select>
+            </div>
+            <div class="full">
+              <label class="product-form-label">판매 옵션 *</label>
+              <div class="opt-mode-toggle">
+                <button type="button" class="opt-mode-btn active" id="p-mode-single" onclick="setOptionMode('p','single')">단일 가격</button>
+                <button type="button" class="opt-mode-btn" id="p-mode-multi" onclick="setOptionMode('p','multi')">옵션별 가격</button>
+              </div>
+              <div id="p-single-wrap">
+                <input class="product-form-input" type="text" id="p-price" placeholder="예: 12,000원" required>
+              </div>
+              <div id="p-multi-wrap" style="display:none;">
+                <div class="opt-col-header"><span>옵션명</span><span>가격</span><span></span></div>
+                <div class="opt-rows" id="p-opt-rows"></div>
+                <button type="button" class="opt-add-row-btn" onclick="addOptionRow('p')">+ 옵션 추가</button>
+              </div>
             </div>
             <div class="full">
               <label class="product-form-label">상품 설명</label>
@@ -1979,19 +2007,28 @@ footer{background:var(--ink);padding:60px 0 38px;}
         <label class="edit-label">상품명 *</label>
         <input class="edit-input" type="text" id="edit-p-name" required>
       </div>
-      <div class="edit-field-row">
-        <div>
-          <label class="edit-label">판매가 *</label>
-          <input class="edit-input" type="text" id="edit-p-price" required>
+      <div class="edit-field">
+        <label class="edit-label">카테고리</label>
+        <select class="edit-input" id="edit-p-category">
+          <option value="fig">무화과 제품</option>
+          <option value="gecko">게코 사료</option>
+          <option value="gift">선물세트</option>
+          <option value="other">기타</option>
+        </select>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">판매 옵션 *</label>
+        <div class="opt-mode-toggle">
+          <button type="button" class="opt-mode-btn active" id="edit-p-mode-single" onclick="setOptionMode('edit-p','single')">단일 가격</button>
+          <button type="button" class="opt-mode-btn" id="edit-p-mode-multi" onclick="setOptionMode('edit-p','multi')">옵션별 가격</button>
         </div>
-        <div>
-          <label class="edit-label">카테고리</label>
-          <select class="edit-input" id="edit-p-category">
-            <option value="fig">무화과 제품</option>
-            <option value="gecko">게코 사료</option>
-            <option value="gift">선물세트</option>
-            <option value="other">기타</option>
-          </select>
+        <div id="edit-p-single-wrap">
+          <input class="edit-input" type="text" id="edit-p-price" placeholder="예: 12,000원" required>
+        </div>
+        <div id="edit-p-multi-wrap" style="display:none;">
+          <div class="opt-col-header"><span>옵션명</span><span>가격</span><span></span></div>
+          <div class="opt-rows" id="edit-p-opt-rows"></div>
+          <button type="button" class="opt-add-row-btn" onclick="addOptionRow('edit-p')">+ 옵션 추가</button>
         </div>
       </div>
       <div class="edit-field">
@@ -3032,20 +3069,124 @@ function handleImgDrop(e) {
 }
 
 /* ===== 상품 등록/삭제/조회 ===== */
+/* ===== 옵션 관리 ===== */
+function setOptionMode(prefix, mode) {
+  const singleBtn = document.getElementById(prefix + '-mode-single');
+  const multiBtn  = document.getElementById(prefix + '-mode-multi');
+  const singleWrap = document.getElementById(prefix + '-single-wrap');
+  const multiWrap  = document.getElementById(prefix + '-multi-wrap');
+  const priceInput = document.getElementById(prefix + '-price');
+
+  if (mode === 'single') {
+    singleBtn.classList.add('active'); multiBtn.classList.remove('active');
+    singleWrap.style.display = ''; multiWrap.style.display = 'none';
+    if (priceInput) priceInput.required = true;
+  } else {
+    multiBtn.classList.add('active'); singleBtn.classList.remove('active');
+    singleWrap.style.display = 'none'; multiWrap.style.display = '';
+    if (priceInput) priceInput.required = false;
+    const rows = document.getElementById(prefix + '-opt-rows');
+    if (rows && rows.children.length === 0) addOptionRow(prefix);
+  }
+}
+
+function addOptionRow(prefix) {
+  const container = document.getElementById(prefix + '-opt-rows');
+  const row = document.createElement('div');
+  row.className = 'opt-row';
+  row.innerHTML = `
+    <input class="opt-row-input" type="text" placeholder="옵션명 (예: 기본형 60g)" required>
+    <input class="opt-row-input" type="text" placeholder="가격 (예: 18,000원)" required>
+    <button type="button" class="opt-row-del" onclick="removeOptionRow(this)">×</button>
+  `;
+  container.appendChild(row);
+}
+
+function removeOptionRow(btn) {
+  const container = btn.closest('.opt-rows');
+  if (container.children.length <= 1) { showToast('최소 1개 옵션이 필요합니다.'); return; }
+  btn.closest('.opt-row').remove();
+}
+
+function getOptionsData(prefix) {
+  const singleWrap = document.getElementById(prefix + '-single-wrap');
+  const isMulti = singleWrap.style.display === 'none';
+  if (!isMulti) {
+    const price = document.getElementById(prefix + '-price').value.trim();
+    return { hasOptions: false, price, options: [] };
+  }
+  const rows = document.querySelectorAll('#' + prefix + '-opt-rows .opt-row');
+  const options = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const name  = inputs[0].value.trim();
+    const price = inputs[1].value.trim();
+    if (name && price) options.push({ name, price });
+  });
+  if (!options.length) return null;
+  const nums = options.map(o => parseInt(o.price.replace(/[^0-9]/g,''))).filter(n => !isNaN(n));
+  let displayPrice = options[0].price;
+  if (nums.length > 1) {
+    const min = Math.min(...nums), max = Math.max(...nums);
+    displayPrice = min === max ? options[0].price : min.toLocaleString() + '원 ~ ' + max.toLocaleString() + '원';
+  }
+  return { hasOptions: true, price: displayPrice, options };
+}
+
+function setOptionsData(prefix, product) {
+  if (product.hasOptions && product.options && product.options.length) {
+    setOptionMode(prefix, 'multi');
+    const container = document.getElementById(prefix + '-opt-rows');
+    container.innerHTML = '';
+    product.options.forEach(opt => {
+      addOptionRow(prefix);
+      const row = container.lastElementChild;
+      const inputs = row.querySelectorAll('input');
+      inputs[0].value = opt.name;
+      inputs[1].value = opt.price;
+    });
+  } else {
+    setOptionMode(prefix, 'single');
+    const pi = document.getElementById(prefix + '-price');
+    if (pi) pi.value = product.price || '';
+  }
+}
+
+function resetOptionsForm(prefix) {
+  setOptionMode(prefix, 'single');
+  const pi = document.getElementById(prefix + '-price');
+  if (pi) pi.value = '';
+  const rows = document.getElementById(prefix + '-opt-rows');
+  if (rows) rows.innerHTML = '';
+}
+
+function renderOptionsInCard(p) {
+  if (p.hasOptions && p.options && p.options.length) {
+    return `<div class="p-options-list">${p.options.map(o =>
+      `<div class="p-option-row-display"><span class="opt-n">${o.name}</span><span class="opt-p">${o.price}</span></div>`
+    ).join('')}</div>`;
+  }
+  return `<div class="p-price">${p.price}</div>`;
+}
+
+/* ===== 상품 등록 ===== */
 function addAdminProduct(e) {
   e.preventDefault();
   const catMap = {fig:'무화과 제품',gecko:'게코 사료',gift:'선물세트',other:'기타'};
   const stockMap = {available:'판매중',soldout:'품절',preparing:'준비중'};
-  const cat = document.getElementById('p-category').value;
+  const cat   = document.getElementById('p-category').value;
   const stock = document.getElementById('p-stock').value;
+  const optData = getOptionsData('p');
+  if (!optData) { showToast('옵션을 최소 1개 입력해 주세요.'); return; }
+
   const product = {
     id: 'prod-' + Date.now(),
     name: document.getElementById('p-name').value.trim(),
-    price: document.getElementById('p-price').value.trim(),
-    category: cat,
-    categoryLabel: catMap[cat],
-    stock: stock,
-    stockLabel: stockMap[stock],
+    price: optData.price,
+    hasOptions: optData.hasOptions,
+    options: optData.options,
+    category: cat, categoryLabel: catMap[cat],
+    stock: stock, stockLabel: stockMap[stock],
     desc: document.getElementById('p-desc').value.trim(),
     imageUrl: pendingProductImageDataUrl || '',
     createdAt: new Date().toLocaleDateString('ko-KR')
@@ -3060,6 +3201,7 @@ function addAdminProduct(e) {
   }
   e.target.reset();
   removeProductImage();
+  resetOptionsForm('p');
   loadAdminProducts();
   loadAdminStats();
   showToast('"' + product.name + '" 상품이 등록되었습니다.');
@@ -3092,7 +3234,7 @@ function loadAdminProducts() {
         <div class="p-name">${p.name}</div>
         <span class="product-custom-badge">CUSTOM</span>
       </div>
-      <div class="p-price">${p.price}</div>
+      ${renderOptionsInCard(p)}
       <div class="p-cat">${p.categoryLabel} · <span style="color:${stockColor[p.stock]||'#666'}">${p.stockLabel}</span></div>
       ${p.desc ? `<div class="p-desc">${p.desc}</div>` : ''}
       <div style="font-size:11px;color:#bbb;margin-top:6px;">${p.createdAt} 등록</div>
@@ -3151,7 +3293,7 @@ function loadSystemProducts() {
         <div class="p-name">${p.name}</div>
         <span class="product-system-badge">SYSTEM</span>
       </div>
-      <div class="p-price">${p.price}</div>
+      ${renderOptionsInCard(p)}
       <div class="p-cat">${p.categoryLabel} · <span style="color:${stockColor[p.stock]||'#666'}">${p.stockLabel}</span></div>
       ${p.desc ? `<div class="p-desc">${p.desc}</div>` : ''}
       <div class="p-actions" style="margin-top:12px;">
@@ -3179,11 +3321,11 @@ function openEditProduct(id) {
   editImageRemoved = false;
 
   document.getElementById('edit-p-name').value = p.name;
-  document.getElementById('edit-p-price').value = p.price;
   document.getElementById('edit-p-category').value = p.category;
   document.getElementById('edit-p-stock').value = p.stock;
   document.getElementById('edit-p-desc').value = p.desc || '';
   document.getElementById('edit-image-file').value = '';
+  setOptionsData('edit-p', p);
 
   if (p.imageUrl) {
     document.getElementById('edit-img-current-preview').src = p.imageUrl;
@@ -3274,12 +3416,13 @@ function saveEditProduct(e) {
   e.preventDefault();
   const catMap = {fig:'무화과 제품',gecko:'게코 사료',gift:'선물세트',other:'기타'};
   const stockMap = {available:'판매중',soldout:'품절',preparing:'준비중'};
-  const cat = document.getElementById('edit-p-category').value;
-  const stock = document.getElementById('edit-p-stock').value;
+  const cat     = document.getElementById('edit-p-category').value;
+  const stock   = document.getElementById('edit-p-stock').value;
   const newName = document.getElementById('edit-p-name').value.trim();
+  const optData = getOptionsData('edit-p');
+  if (!optData) { showToast('옵션을 최소 1개 입력해 주세요.'); return; }
 
   if (editingProductType === 'system') {
-    // 기본 상품: overrides 객체에 저장
     const existing = getSystemProducts().find(x => x.id === editingProductId) || {};
     let newImageUrl = existing.imageUrl || '';
     if (pendingEditImageDataUrl) newImageUrl = pendingEditImageDataUrl;
@@ -3288,11 +3431,11 @@ function saveEditProduct(e) {
     const overrides = JSON.parse(localStorage.getItem('ilsim_system_products') || '{}');
     overrides[editingProductId] = {
       name: newName,
-      price: document.getElementById('edit-p-price').value.trim(),
-      category: cat,
-      categoryLabel: catMap[cat],
-      stock: stock,
-      stockLabel: stockMap[stock],
+      price: optData.price,
+      hasOptions: optData.hasOptions,
+      options: optData.options,
+      category: cat, categoryLabel: catMap[cat],
+      stock: stock, stockLabel: stockMap[stock],
       desc: document.getElementById('edit-p-desc').value.trim(),
       imageUrl: newImageUrl,
     };
@@ -3308,7 +3451,6 @@ function saveEditProduct(e) {
     showToast('"' + newName + '" 상품이 수정되었습니다.');
 
   } else {
-    // 추가 상품: ilsim_custom_products 배열 업데이트
     let products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
     const idx = products.findIndex(x => x.id === editingProductId);
     if (idx === -1) return;
@@ -3321,11 +3463,11 @@ function saveEditProduct(e) {
     products[idx] = {
       ...existing,
       name: newName,
-      price: document.getElementById('edit-p-price').value.trim(),
-      category: cat,
-      categoryLabel: catMap[cat],
-      stock: stock,
-      stockLabel: stockMap[stock],
+      price: optData.price,
+      hasOptions: optData.hasOptions,
+      options: optData.options,
+      category: cat, categoryLabel: catMap[cat],
+      stock: stock, stockLabel: stockMap[stock],
       desc: document.getElementById('edit-p-desc').value.trim(),
       imageUrl: newImageUrl,
     };
