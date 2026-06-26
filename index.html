@@ -542,6 +542,130 @@ footer{background:var(--ink);padding:60px 0 38px;}
   .post-modal-body{padding:20px 18px;}
   .post-modal-box > div:last-child{padding:18px 18px 24px;}
 }
+
+/* ===== CHECKOUT MODAL ===== */
+.checkout-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s;}
+.checkout-overlay.open{opacity:1;pointer-events:all;}
+.checkout-box{background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:36px 32px 32px;}
+.checkout-box h3{font-family:'Gowun Batang',serif;font-size:22px;font-weight:700;color:#2B2518;margin:0 0 24px;}
+.checkout-field{margin-bottom:18px;}
+.checkout-label{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.08em;color:#888;text-transform:uppercase;display:block;margin-bottom:6px;}
+.checkout-input{width:100%;border:1.5px solid #D9D0C0;border-radius:8px;padding:12px 14px;font-size:15px;font-family:'Pretendard',sans-serif;box-sizing:border-box;transition:border-color .2s;}
+.checkout-input:focus{outline:none;border-color:var(--accent);}
+.checkout-btns{display:flex;gap:10px;margin-top:24px;}
+.checkout-cancel{flex:1;padding:14px;border:1.5px solid #D9D0C0;background:transparent;border-radius:8px;font-size:15px;cursor:pointer;color:#666;}
+.checkout-submit{flex:2;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;}
+.checkout-submit:hover{background:#4a5640;}
+.checkout-order-summary{background:#F7F3EB;border-radius:10px;padding:16px;margin-bottom:20px;}
+.checkout-order-summary .summary-title{font-size:12px;font-family:ui-monospace,monospace;color:#888;letter-spacing:.06em;margin-bottom:10px;}
+.checkout-order-item{display:flex;justify-content:space-between;font-size:14px;color:#333;margin-bottom:6px;}
+.checkout-order-total{display:flex;justify-content:space-between;font-size:16px;font-weight:700;color:var(--accent);border-top:1px solid #D9D0C0;padding-top:10px;margin-top:10px;}
+
+/* ===== ADMIN PANEL ===== */
+#page-admin{min-height:100vh;background:#f0f2f5;}
+.admin-login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a2332 0%,#2d3e50 100%);}
+.admin-login-box{background:#fff;border-radius:16px;padding:48px 40px;width:100%;max-width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.admin-login-logo{font-family:'Gowun Batang',serif;font-size:24px;font-weight:700;color:#1a2332;margin-bottom:6px;letter-spacing:.02em;}
+.admin-login-sub{font-size:12px;color:#999;font-family:ui-monospace,monospace;letter-spacing:.08em;margin-bottom:32px;}
+.admin-login-field{margin-bottom:14px;text-align:left;}
+.admin-login-label{font-size:11px;font-family:ui-monospace,monospace;color:#777;letter-spacing:.06em;display:block;margin-bottom:5px;text-transform:uppercase;}
+.admin-login-input{width:100%;border:1.5px solid #e0e0e0;border-radius:8px;padding:12px 14px;font-size:15px;box-sizing:border-box;transition:border-color .2s;}
+.admin-login-input:focus{outline:none;border-color:#2d3e50;}
+.admin-login-btn{width:100%;padding:14px;background:#1a2332;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .2s;}
+.admin-login-btn:hover{background:#2d3e50;}
+.admin-login-err{display:none;font-size:13px;color:#e53935;background:#ffebee;border-radius:6px;padding:10px;margin-bottom:14px;}
+.admin-back-btn{display:inline-block;margin-top:20px;font-size:12px;color:#aaa;cursor:pointer;text-decoration:underline;}
+
+.admin-panel{display:flex;min-height:100vh;}
+.admin-sidebar{width:220px;min-width:220px;background:#1a2332;display:flex;flex-direction:column;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.admin-sidebar-brand{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+.admin-sidebar-brand .brand-ko{font-family:'Gowun Batang',serif;font-size:17px;font-weight:700;color:#fff;}
+.admin-sidebar-brand .brand-en{font-family:ui-monospace,monospace;font-size:10px;color:#7fa3c8;letter-spacing:.1em;margin-top:2px;}
+.admin-nav-section{padding:16px 0 8px;}
+.admin-nav-label{font-size:10px;font-family:ui-monospace,monospace;color:rgba(255,255,255,.3);letter-spacing:.1em;padding:0 24px;margin-bottom:6px;text-transform:uppercase;}
+.admin-nav-item{display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:14px;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.admin-nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.admin-nav-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:#5ab4f5;}
+.admin-nav-item .nav-icon{font-size:16px;width:20px;text-align:center;}
+.admin-sidebar-footer{margin-top:auto;padding:16px 24px;border-top:1px solid rgba(255,255,255,.08);}
+.admin-logout-btn{width:100%;padding:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;transition:all .15s;}
+.admin-logout-btn:hover{background:rgba(255,255,255,.12);color:#fff;}
+.admin-site-link{display:block;text-align:center;font-size:11px;color:rgba(255,255,255,.3);margin-top:8px;cursor:pointer;text-decoration:underline;}
+
+.admin-main{flex:1;padding:32px 36px;overflow-y:auto;background:#f0f2f5;}
+.admin-section{display:none;}
+.admin-section.active{display:block;}
+.admin-page-title{font-family:'Gowun Batang',serif;font-size:24px;font-weight:700;color:#1a2332;margin:0 0 24px;}
+
+.admin-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+.admin-stat-card{background:#fff;border-radius:12px;padding:22px 20px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.admin-stat-label{font-size:11px;font-family:ui-monospace,monospace;color:#999;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.admin-stat-value{font-size:30px;font-weight:800;color:#1a2332;font-family:'Gowun Batang',serif;}
+.admin-stat-sub{font-size:12px;color:#999;margin-top:4px;}
+
+.admin-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:24px;}
+.admin-card-title{font-size:14px;font-weight:700;color:#1a2332;margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
+.admin-table{width:100%;border-collapse:collapse;font-size:14px;}
+.admin-table th{text-align:left;padding:10px 12px;font-size:11px;font-family:ui-monospace,monospace;color:#999;letter-spacing:.05em;border-bottom:2px solid #f0f0f0;text-transform:uppercase;}
+.admin-table td{padding:12px 12px;border-bottom:1px solid #f7f7f7;color:#333;vertical-align:middle;}
+.admin-table tr:last-child td{border-bottom:none;}
+.admin-table tr:hover td{background:#fafafa;}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace;}
+.status-pending{background:#fff3e0;color:#e65100;}
+.status-processing{background:#e3f2fd;color:#1565c0;}
+.status-shipping{background:#e8f5e9;color:#2e7d32;}
+.status-delivered{background:#f3e5f5;color:#6a1b9a;}
+.status-cancelled{background:#ffebee;color:#c62828;}
+.admin-status-select{border:1px solid #e0e0e0;border-radius:6px;padding:5px 8px;font-size:12px;background:#fff;cursor:pointer;color:#333;}
+
+.admin-filter-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.admin-filter-btn{padding:7px 16px;border:1.5px solid #e0e0e0;border-radius:20px;font-size:13px;background:#fff;cursor:pointer;color:#666;transition:all .15s;}
+.admin-filter-btn.active{border-color:#1a2332;background:#1a2332;color:#fff;}
+.admin-search{flex:1;min-width:180px;padding:8px 14px;border:1.5px solid #e0e0e0;border-radius:20px;font-size:13px;outline:none;}
+.admin-search:focus{border-color:#5ab4f5;}
+
+.admin-order-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px;display:none;}
+.admin-order-detail-box{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;padding:32px;}
+
+.product-add-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.product-add-form .full{grid-column:1/-1;}
+.product-form-label{font-size:11px;font-family:ui-monospace,monospace;color:#999;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:5px;}
+.product-form-input{width:100%;border:1.5px solid #e0e0e0;border-radius:8px;padding:10px 12px;font-size:14px;box-sizing:border-box;font-family:'Pretendard',sans-serif;transition:border-color .2s;}
+.product-form-input:focus{outline:none;border-color:#5ab4f5;}
+.product-add-btn{background:#1a2332;color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;}
+.product-add-btn:hover{background:#2d3e50;}
+.product-list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.product-admin-card{background:#f7f9fc;border:1.5px solid #e8ecf0;border-radius:10px;padding:16px;}
+.product-admin-card .p-name{font-size:15px;font-weight:700;color:#1a2332;margin-bottom:4px;}
+.product-admin-card .p-price{font-size:14px;color:var(--accent);font-weight:600;margin-bottom:4px;}
+.product-admin-card .p-cat{font-size:11px;font-family:ui-monospace,monospace;color:#999;letter-spacing:.05em;text-transform:uppercase;}
+.product-admin-card .p-desc{font-size:13px;color:#666;margin-top:8px;line-height:1.5;}
+.product-admin-card .p-actions{display:flex;gap:8px;margin-top:12px;}
+.p-toggle-btn{padding:6px 12px;border:1.5px solid #e0e0e0;border-radius:6px;font-size:12px;cursor:pointer;background:#fff;transition:all .15s;}
+.p-delete-btn{padding:6px 12px;border:none;border-radius:6px;font-size:12px;cursor:pointer;background:#ffebee;color:#c62828;transition:all .15s;}
+.p-delete-btn:hover{background:#e53935;color:#fff;}
+.product-system-badge{background:#e8f5e9;color:#2e7d32;font-size:10px;font-family:ui-monospace,monospace;padding:2px 7px;border-radius:10px;letter-spacing:.04em;}
+.product-custom-badge{background:#e3f2fd;color:#1565c0;font-size:10px;font-family:ui-monospace,monospace;padding:2px 7px;border-radius:10px;letter-spacing:.04em;}
+.admin-empty{text-align:center;padding:48px 0;color:#bbb;font-size:14px;}
+
+@media(max-width:900px){
+  .admin-stat-grid{grid-template-columns:repeat(2,1fr);}
+  .admin-sidebar{width:200px;min-width:200px;}
+  .admin-main{padding:24px 20px;}
+}
+@media(max-width:680px){
+  .admin-panel{flex-direction:column;}
+  .admin-sidebar{width:100%;min-width:0;height:auto;position:static;flex-direction:row;align-items:center;flex-wrap:wrap;padding:12px 16px;gap:4px;}
+  .admin-sidebar-brand{padding:0;border:none;margin-right:auto;}
+  .admin-nav-section{padding:0;display:flex;gap:4px;}
+  .admin-nav-label{display:none;}
+  .admin-nav-item{padding:8px 12px;border-left:none;border-bottom:2px solid transparent;font-size:13px;}
+  .admin-nav-item.active{border-bottom-color:#5ab4f5;background:transparent;}
+  .admin-sidebar-footer{display:none;}
+  .admin-stat-grid{grid-template-columns:repeat(2,1fr);}
+  .product-add-form{grid-template-columns:1fr;}
+  .product-add-form .full{grid-column:1;}
+}
 </style>
 </head>
 <body>
@@ -1326,13 +1450,50 @@ footer{background:var(--ink);padding:60px 0 38px;}
           </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;">
             <button class="btn-outline" style="flex:1;min-width:140px;padding:16px;" onclick="clearCart()">전체 삭제</button>
-            <button class="btn-primary" style="flex:2;min-width:200px;padding:16px;font-size:16px;" onclick="goPage('support')">주문 문의하기</button>
+            <button class="btn-primary" style="flex:2;min-width:200px;padding:16px;font-size:16px;" onclick="openCheckout()">주문하기</button>
           </div>
-          <p class="mono" style="font-size:12px;color:var(--muted);text-align:center;margin-top:20px;">주문은 1:1 문의 또는 전화(010-6518-1136)로 접수해 주세요.</p>
+          <p class="mono" style="font-size:12px;color:var(--muted);text-align:center;margin-top:20px;">주문 접수 후 담당자가 확인하여 연락드립니다.</p>
         </div>
       </div>
     </section>
   </main>
+</div>
+
+<!-- ============ 주문 결제 모달 ============ -->
+<div class="checkout-overlay" id="checkout-modal" onclick="handleCheckoutBg(event)">
+  <div class="checkout-box">
+    <h3>주문 정보 입력</h3>
+    <div class="checkout-order-summary">
+      <div class="summary-title">ORDER SUMMARY</div>
+      <div id="checkout-summary-items"></div>
+      <div class="checkout-order-total">
+        <span>총 결제금액</span>
+        <span id="checkout-summary-total"></span>
+      </div>
+    </div>
+    <form onsubmit="submitOrder(event)">
+      <div class="checkout-field">
+        <label class="checkout-label">주문자 이름 *</label>
+        <input class="checkout-input" type="text" id="order-name" placeholder="홍길동" required>
+      </div>
+      <div class="checkout-field">
+        <label class="checkout-label">연락처 *</label>
+        <input class="checkout-input" type="tel" id="order-phone" placeholder="010-0000-0000" required>
+      </div>
+      <div class="checkout-field">
+        <label class="checkout-label">배송지 주소 *</label>
+        <input class="checkout-input" type="text" id="order-address" placeholder="서울시 강남구 테헤란로 000" required>
+      </div>
+      <div class="checkout-field">
+        <label class="checkout-label">배송 메모</label>
+        <input class="checkout-input" type="text" id="order-memo" placeholder="부재 시 문 앞에 놔주세요">
+      </div>
+      <div class="checkout-btns">
+        <button type="button" class="checkout-cancel" onclick="closeCheckout()">취소</button>
+        <button type="submit" class="checkout-submit">주문 접수하기</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- ============ 체험단 문의 모달 ============ -->
@@ -1452,10 +1613,233 @@ footer{background:var(--ink);padding:60px 0 38px;}
     <div class="footer-divider"></div>
     <div class="mono" style="font-size:11px;color:var(--muted2);line-height:1.8;">
       (주)일심 · 대표 장하림 · 전라남도 신안군 압해읍 압해로 371-1, 1층 103호 · 사업자등록번호 318-86-03862<br>
-      © 2026 ILSIM. All rights reserved.
+      <span onclick="onFooterCopyrightClick()" style="cursor:default;user-select:none;">© 2026 ILSIM. All rights reserved.</span>
     </div>
   </div>
 </footer>
+
+<!-- ============ 관리자 페이지 ============ -->
+<div id="page-admin" class="page">
+
+  <!-- 로그인 화면 -->
+  <div id="admin-login" class="admin-login-screen">
+    <div class="admin-login-box">
+      <div class="admin-login-logo">일심 (一心)</div>
+      <div class="admin-login-sub">ADMIN PANEL</div>
+      <div class="admin-login-err" id="admin-login-err">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+      <form onsubmit="adminLogin(event)">
+        <div class="admin-login-field">
+          <label class="admin-login-label">아이디</label>
+          <input class="admin-login-input" type="text" id="admin-id-input" autocomplete="username" placeholder="아이디 입력">
+        </div>
+        <div class="admin-login-field">
+          <label class="admin-login-label">비밀번호</label>
+          <input class="admin-login-input" type="password" id="admin-pw-input" autocomplete="current-password" placeholder="비밀번호 입력">
+        </div>
+        <button type="submit" class="admin-login-btn">로그인</button>
+      </form>
+      <span class="admin-back-btn" onclick="goPage('about')">← 사이트로 돌아가기</span>
+    </div>
+  </div>
+
+  <!-- 대시보드 패널 -->
+  <div id="admin-panel" class="admin-panel" style="display:none;">
+
+    <!-- 사이드바 -->
+    <div class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <div class="brand-ko">일심 관리자</div>
+        <div class="brand-en">ILSIM ADMIN</div>
+      </div>
+      <div class="admin-nav-section">
+        <div class="admin-nav-label">메뉴</div>
+        <div class="admin-nav-item active" onclick="showAdminSection('dashboard')" id="anav-dashboard">
+          <span class="nav-icon">📊</span> 대시보드
+        </div>
+        <div class="admin-nav-item" onclick="showAdminSection('orders')" id="anav-orders">
+          <span class="nav-icon">📦</span> 주문 관리
+        </div>
+        <div class="admin-nav-item" onclick="showAdminSection('products')" id="anav-products">
+          <span class="nav-icon">🌿</span> 상품 관리
+        </div>
+      </div>
+      <div class="admin-sidebar-footer">
+        <button class="admin-logout-btn" onclick="adminLogout()">로그아웃</button>
+        <span class="admin-site-link" onclick="adminGoSite()">← 사이트 보기</span>
+      </div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="admin-main">
+
+      <!-- 대시보드 섹션 -->
+      <div id="asec-dashboard" class="admin-section active">
+        <div class="admin-page-title">대시보드</div>
+        <div class="admin-stat-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">오늘 주문</div>
+            <div class="admin-stat-value" id="stat-today">0</div>
+            <div class="admin-stat-sub">건</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">전체 주문</div>
+            <div class="admin-stat-value" id="stat-total">0</div>
+            <div class="admin-stat-sub">건</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">미처리 주문</div>
+            <div class="admin-stat-value" id="stat-pending" style="color:#e65100;">0</div>
+            <div class="admin-stat-sub">건</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">등록 상품</div>
+            <div class="admin-stat-value" id="stat-products">0</div>
+            <div class="admin-stat-sub">개</div>
+          </div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title">
+            최근 주문
+            <button class="admin-filter-btn" onclick="showAdminSection('orders')" style="font-size:12px;padding:5px 12px;">전체 보기</button>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>주문번호</th>
+                <th>주문일시</th>
+                <th>주문자</th>
+                <th>금액</th>
+                <th>상태</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-recent-orders">
+              <tr><td colspan="5" class="admin-empty">아직 주문이 없습니다.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 주문 관리 섹션 -->
+      <div id="asec-orders" class="admin-section">
+        <div class="admin-page-title">주문 관리</div>
+        <div class="admin-filter-bar">
+          <button class="admin-filter-btn active" onclick="filterOrders('all',this)">전체</button>
+          <button class="admin-filter-btn" onclick="filterOrders('pending',this)">대기중</button>
+          <button class="admin-filter-btn" onclick="filterOrders('processing',this)">처리중</button>
+          <button class="admin-filter-btn" onclick="filterOrders('shipping',this)">배송중</button>
+          <button class="admin-filter-btn" onclick="filterOrders('delivered',this)">배송완료</button>
+          <button class="admin-filter-btn" onclick="filterOrders('cancelled',this)">취소</button>
+          <input type="text" class="admin-search" id="order-search" placeholder="주문자 이름·연락처 검색" oninput="filterOrders(currentOrderFilter,null)">
+        </div>
+        <div class="admin-card" style="padding:0;overflow:hidden;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="padding-left:20px;">주문번호</th>
+                <th>주문일시</th>
+                <th>주문자</th>
+                <th>연락처</th>
+                <th>금액</th>
+                <th>상품</th>
+                <th>상태</th>
+                <th>상세</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <tr><td colspan="8" class="admin-empty" style="padding:48px 0;">주문이 없습니다.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 상품 관리 섹션 -->
+      <div id="asec-products" class="admin-section">
+        <div class="admin-page-title">상품 관리</div>
+
+        <!-- 상품 추가 폼 -->
+        <div class="admin-card">
+          <div class="admin-card-title">신규 상품 등록</div>
+          <form class="product-add-form" onsubmit="addAdminProduct(event)">
+            <div>
+              <label class="product-form-label">상품명 *</label>
+              <input class="product-form-input" type="text" id="p-name" placeholder="예: 무화과 잼 100g" required>
+            </div>
+            <div>
+              <label class="product-form-label">판매가 *</label>
+              <input class="product-form-input" type="text" id="p-price" placeholder="예: 12,000원" required>
+            </div>
+            <div>
+              <label class="product-form-label">카테고리</label>
+              <select class="product-form-input" id="p-category">
+                <option value="fig">무화과 제품</option>
+                <option value="gecko">게코 사료</option>
+                <option value="gift">선물세트</option>
+                <option value="other">기타</option>
+              </select>
+            </div>
+            <div>
+              <label class="product-form-label">재고 상태</label>
+              <select class="product-form-input" id="p-stock">
+                <option value="available">판매중</option>
+                <option value="soldout">품절</option>
+                <option value="preparing">준비중</option>
+              </select>
+            </div>
+            <div class="full">
+              <label class="product-form-label">상품 설명</label>
+              <input class="product-form-input" type="text" id="p-desc" placeholder="간단한 상품 설명을 입력하세요">
+            </div>
+            <div class="full" style="text-align:right;">
+              <button type="submit" class="product-add-btn">+ 상품 등록</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 기본 상품 목록 -->
+        <div class="admin-card">
+          <div class="admin-card-title">
+            기본 상품 <span style="font-size:12px;font-weight:400;color:#999;">(시스템 고정)</span>
+          </div>
+          <div class="product-list-grid">
+            <div class="product-admin-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <div class="p-name">일심 게코사료</div>
+                <span class="product-system-badge">SYSTEM</span>
+              </div>
+              <div class="p-price">38,000원</div>
+              <div class="p-cat">gecko · 기본 상품</div>
+              <div class="p-desc">압해도 신선 무화과 100% 원료. 게코도마뱀 전용 프리미엄 사료.</div>
+            </div>
+            <div class="product-admin-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <div class="p-name">압해도 꿀 무화과</div>
+                <span class="product-system-badge">SYSTEM</span>
+              </div>
+              <div class="p-price">18,000원~</div>
+              <div class="p-cat">fig · 기본 상품</div>
+              <div class="p-desc">당일 수확 완숙 무화과. 60g / 100g / 200g / 500g 옵션.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 추가 상품 목록 -->
+        <div class="admin-card">
+          <div class="admin-card-title">등록 추가 상품</div>
+          <div class="product-list-grid" id="custom-product-list">
+            <div class="admin-empty" style="grid-column:1/-1;">등록된 추가 상품이 없습니다.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /admin-main -->
+  </div><!-- /admin-panel -->
+
+</div><!-- /page-admin -->
+
+<!-- 주문 상세 오버레이 -->
+<div class="admin-order-detail-overlay" id="order-detail-overlay" onclick="closeOrderDetail(event)">
+  <div class="admin-order-detail-box" id="order-detail-box"></div>
+</div>
 
 <script>
 // Page navigation
@@ -1466,6 +1850,9 @@ function goPage(page) {
     b.classList.toggle('active', b.dataset.page === page);
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (page === 'admin' && typeof adminAuthed !== 'undefined' && adminAuthed) {
+    showAdminDashboard();
+  }
 }
 
 function goPageAndScroll(page, sectionId) {
@@ -2073,6 +2460,342 @@ async function submitEventForm(e) {
     btn.textContent = '문의 신청하기';
   }
 }
+
+/* ===== CHECKOUT MODAL ===== */
+function openCheckout() {
+  const cart = getCart();
+  if (!cart.length) return;
+  const items = document.getElementById('checkout-summary-items');
+  items.innerHTML = cart.map(i =>
+    `<div class="checkout-order-item"><span>${i.name}${i.option ? ' · ' + i.option : ''} ×${i.qty}</span><span>${(parseInt(i.price.replace(/,/g,'')) * i.qty).toLocaleString()}원</span></div>`
+  ).join('');
+  document.getElementById('checkout-summary-total').textContent = document.getElementById('cart-total').textContent;
+  document.getElementById('checkout-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleCheckoutBg(e) {
+  if (e.target === document.getElementById('checkout-modal')) closeCheckout();
+}
+function submitOrder(e) {
+  e.preventDefault();
+  const cart = getCart();
+  const total = cart.reduce((s, i) => s + parseInt(i.price.replace(/,/g,'')) * i.qty, 0);
+  const order = {
+    id: 'ORD-' + Date.now(),
+    date: new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit'}),
+    time: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit'}),
+    datetime: new Date().toISOString(),
+    customer: {
+      name: document.getElementById('order-name').value.trim(),
+      phone: document.getElementById('order-phone').value.trim(),
+      address: document.getElementById('order-address').value.trim(),
+      memo: document.getElementById('order-memo').value.trim()
+    },
+    items: cart,
+    total: total,
+    status: 'pending'
+  };
+  const orders = JSON.parse(localStorage.getItem('ilsim_orders') || '[]');
+  orders.unshift(order);
+  localStorage.setItem('ilsim_orders', JSON.stringify(orders));
+  closeCheckout();
+  clearCart();
+  e.target.reset();
+  showToast('주문이 접수되었습니다! 담당자가 확인 후 연락드릴게요.');
+}
+
+/* ===== ADMIN PANEL ===== */
+const ADMIN_CRED = { id: 'ilsim', pw: 'ilsim2026!' };
+let adminAuthed = false;
+let currentOrderFilter = 'all';
+
+// Footer copyright 5번 클릭으로 관리자 접근
+let adminClickCount = 0, adminClickTimer = null;
+function onFooterCopyrightClick() {
+  adminClickCount++;
+  clearTimeout(adminClickTimer);
+  if (adminClickCount >= 5) {
+    adminClickCount = 0;
+    goPage('admin');
+  } else {
+    adminClickTimer = setTimeout(() => { adminClickCount = 0; }, 2000);
+  }
+}
+
+function adminLogin(e) {
+  e.preventDefault();
+  const id = document.getElementById('admin-id-input').value;
+  const pw = document.getElementById('admin-pw-input').value;
+  const err = document.getElementById('admin-login-err');
+  // Check against stored credentials (allows password change)
+  const stored = JSON.parse(localStorage.getItem('ilsim_admin_cred') || 'null');
+  const validId = stored ? stored.id : ADMIN_CRED.id;
+  const validPw = stored ? stored.pw : ADMIN_CRED.pw;
+  if (id === validId && pw === validPw) {
+    adminAuthed = true;
+    err.style.display = 'none';
+    showAdminDashboard();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('admin-pw-input').value = '';
+  }
+}
+
+function showAdminDashboard() {
+  document.getElementById('admin-login').style.display = 'none';
+  document.getElementById('admin-panel').style.display = 'flex';
+  loadAdminStats();
+  loadDashboardRecent();
+}
+
+function adminLogout() {
+  adminAuthed = false;
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-login').style.display = 'flex';
+  document.getElementById('admin-id-input').value = '';
+  document.getElementById('admin-pw-input').value = '';
+}
+
+function adminGoSite() {
+  goPage('about');
+}
+
+function showAdminSection(sec) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('asec-' + sec).classList.add('active');
+  document.getElementById('anav-' + sec).classList.add('active');
+  if (sec === 'orders') loadAdminOrders('all');
+  if (sec === 'products') loadAdminProducts();
+  if (sec === 'dashboard') { loadAdminStats(); loadDashboardRecent(); }
+}
+
+/* ----- 통계 ----- */
+function loadAdminStats() {
+  const orders = JSON.parse(localStorage.getItem('ilsim_orders') || '[]');
+  const today = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit'});
+  const todayCount = orders.filter(o => o.date === today).length;
+  const pendingCount = orders.filter(o => o.status === 'pending').length;
+  const customProds = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+  document.getElementById('stat-today').textContent = todayCount;
+  document.getElementById('stat-total').textContent = orders.length;
+  document.getElementById('stat-pending').textContent = pendingCount;
+  document.getElementById('stat-products').textContent = 2 + customProds.length;
+}
+
+function loadDashboardRecent() {
+  const orders = JSON.parse(localStorage.getItem('ilsim_orders') || '[]');
+  const tbody = document.getElementById('dashboard-recent-orders');
+  const recent = orders.slice(0, 5);
+  if (!recent.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="admin-empty">아직 주문이 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = recent.map(o => `
+    <tr>
+      <td style="font-family:ui-monospace,monospace;font-size:12px;">${o.id}</td>
+      <td>${o.date} ${o.time}</td>
+      <td>${o.customer.name}</td>
+      <td style="font-family:'Gowun Batang',serif;font-weight:700;color:var(--accent);">${o.total.toLocaleString()}원</td>
+      <td><span class="status-badge status-${o.status}">${statusLabel(o.status)}</span></td>
+    </tr>
+  `).join('');
+}
+
+/* ----- 주문 관리 ----- */
+function statusLabel(s) {
+  return {pending:'대기중',processing:'처리중',shipping:'배송중',delivered:'배송완료',cancelled:'취소'}[s] || s;
+}
+
+function filterOrders(filter, btn) {
+  currentOrderFilter = filter || currentOrderFilter;
+  if (btn) {
+    document.querySelectorAll('#asec-orders .admin-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  loadAdminOrders(currentOrderFilter);
+}
+
+function loadAdminOrders(filter) {
+  let orders = JSON.parse(localStorage.getItem('ilsim_orders') || '[]');
+  const q = (document.getElementById('order-search')?.value || '').toLowerCase();
+  if (filter && filter !== 'all') orders = orders.filter(o => o.status === filter);
+  if (q) orders = orders.filter(o =>
+    o.customer.name.toLowerCase().includes(q) ||
+    o.customer.phone.includes(q) ||
+    o.id.toLowerCase().includes(q)
+  );
+  const tbody = document.getElementById('orders-table-body');
+  if (!orders.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="admin-empty" style="padding:48px 0;">해당하는 주문이 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = orders.map(o => `
+    <tr>
+      <td style="padding-left:20px;font-family:ui-monospace,monospace;font-size:11px;">${o.id}</td>
+      <td style="white-space:nowrap;">${o.date}<br><span style="font-size:11px;color:#999;">${o.time}</span></td>
+      <td style="font-weight:600;">${o.customer.name}</td>
+      <td style="font-size:13px;color:#666;">${o.customer.phone}</td>
+      <td style="font-weight:700;color:var(--accent);white-space:nowrap;">${o.total.toLocaleString()}원</td>
+      <td style="font-size:12px;color:#666;">${o.items.map(i=>i.name).join(', ').substring(0,20)}${o.items.length>1?'..':''}</td>
+      <td>
+        <select class="admin-status-select" onchange="updateOrderStatus('${o.id}',this.value)">
+          ${['pending','processing','shipping','delivered','cancelled'].map(s =>
+            `<option value="${s}" ${o.status===s?'selected':''}>${statusLabel(s)}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td><button class="admin-filter-btn" style="padding:5px 10px;font-size:12px;" onclick="showOrderDetail('${o.id}')">상세</button></td>
+    </tr>
+  `).join('');
+}
+
+function updateOrderStatus(orderId, newStatus) {
+  const orders = JSON.parse(localStorage.getItem('ilsim_orders') || '[]');
+  const idx = orders.findIndex(o => o.id === orderId);
+  if (idx !== -1) {
+    orders[idx].status = newStatus;
+    localStorage.setItem('ilsim_orders', JSON.stringify(orders));
+    loadAdminStats();
+    loadDashboardRecent();
+  }
+}
+
+function showOrderDetail(orderId) {
+  const orders = JSON.parse(localStorage.getItem('ilsim_orders') || '[]');
+  const o = orders.find(x => x.id === orderId);
+  if (!o) return;
+  const box = document.getElementById('order-detail-box');
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h3 style="font-family:'Gowun Batang',serif;font-size:18px;font-weight:700;color:#1a2332;margin:0;">주문 상세</h3>
+      <button onclick="closeOrderDetail()" style="border:none;background:none;font-size:20px;cursor:pointer;color:#999;">✕</button>
+    </div>
+    <div style="font-family:ui-monospace,monospace;font-size:11px;color:#999;margin-bottom:16px;">${o.id} · ${o.date} ${o.time}</div>
+    <div style="background:#f7f9fc;border-radius:10px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:11px;font-family:ui-monospace,monospace;color:#999;margin-bottom:10px;letter-spacing:.06em;">CUSTOMER</div>
+      <div style="display:grid;grid-template-columns:80px 1fr;gap:8px;font-size:14px;">
+        <span style="color:#999;">주문자</span><span style="font-weight:600;">${o.customer.name}</span>
+        <span style="color:#999;">연락처</span><span>${o.customer.phone}</span>
+        <span style="color:#999;">배송지</span><span>${o.customer.address}</span>
+        ${o.customer.memo ? `<span style="color:#999;">메모</span><span>${o.customer.memo}</span>` : ''}
+      </div>
+    </div>
+    <div style="background:#f7f9fc;border-radius:10px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:11px;font-family:ui-monospace,monospace;color:#999;margin-bottom:10px;letter-spacing:.06em;">ORDER ITEMS</div>
+      ${o.items.map(i => `
+        <div style="display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px solid #eee;">
+          <span>${i.name}${i.option?' · '+i.option:''} <span style="color:#999;">×${i.qty}</span></span>
+          <span style="font-weight:600;">${(parseInt(i.price.replace(/,/g,''))*i.qty).toLocaleString()}원</span>
+        </div>
+      `).join('')}
+      <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;color:var(--accent);padding-top:12px;margin-top:4px;">
+        <span>합계</span><span>${o.total.toLocaleString()}원</span>
+      </div>
+    </div>
+    <div style="margin-bottom:20px;">
+      <div style="font-size:12px;color:#999;margin-bottom:8px;">주문 상태 변경</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${['pending','processing','shipping','delivered','cancelled'].map(s =>
+          `<button onclick="updateOrderStatus('${o.id}','${s}');closeOrderDetail();loadAdminOrders(currentOrderFilter);"
+            style="padding:8px 14px;border-radius:20px;border:1.5px solid ${o.status===s?'#1a2332':'#e0e0e0'};
+            background:${o.status===s?'#1a2332':'#fff'};color:${o.status===s?'#fff':'#555'};
+            font-size:13px;cursor:pointer;">${statusLabel(s)}</button>`
+        ).join('')}
+      </div>
+    </div>
+    <button onclick="deleteOrder('${o.id}')" style="width:100%;padding:12px;background:#ffebee;color:#c62828;border:none;border-radius:8px;font-size:14px;cursor:pointer;">주문 삭제</button>
+  `;
+  document.getElementById('order-detail-overlay').style.display = 'flex';
+}
+
+function closeOrderDetail(e) {
+  if (!e || e.target === document.getElementById('order-detail-overlay') || !e.target) {
+    document.getElementById('order-detail-overlay').style.display = 'none';
+  }
+}
+
+function deleteOrder(orderId) {
+  if (!confirm('이 주문을 삭제하시겠습니까?')) return;
+  let orders = JSON.parse(localStorage.getItem('ilsim_orders') || '[]');
+  orders = orders.filter(o => o.id !== orderId);
+  localStorage.setItem('ilsim_orders', JSON.stringify(orders));
+  document.getElementById('order-detail-overlay').style.display = 'none';
+  loadAdminOrders(currentOrderFilter);
+  loadAdminStats();
+}
+
+/* ----- 상품 관리 ----- */
+function addAdminProduct(e) {
+  e.preventDefault();
+  const catMap = {fig:'무화과 제품',gecko:'게코 사료',gift:'선물세트',other:'기타'};
+  const stockMap = {available:'판매중',soldout:'품절',preparing:'준비중'};
+  const cat = document.getElementById('p-category').value;
+  const stock = document.getElementById('p-stock').value;
+  const product = {
+    id: 'prod-' + Date.now(),
+    name: document.getElementById('p-name').value.trim(),
+    price: document.getElementById('p-price').value.trim(),
+    category: cat,
+    categoryLabel: catMap[cat],
+    stock: stock,
+    stockLabel: stockMap[stock],
+    desc: document.getElementById('p-desc').value.trim(),
+    createdAt: new Date().toLocaleDateString('ko-KR')
+  };
+  const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+  products.unshift(product);
+  localStorage.setItem('ilsim_custom_products', JSON.stringify(products));
+  e.target.reset();
+  loadAdminProducts();
+  loadAdminStats();
+  showToast('"' + product.name + '" 상품이 등록되었습니다.');
+}
+
+function removeAdminProduct(id) {
+  if (!confirm('이 상품을 삭제하시겠습니까?')) return;
+  let products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+  products = products.filter(p => p.id !== id);
+  localStorage.setItem('ilsim_custom_products', JSON.stringify(products));
+  loadAdminProducts();
+  loadAdminStats();
+}
+
+function loadAdminProducts() {
+  const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
+  const container = document.getElementById('custom-product-list');
+  if (!products.length) {
+    container.innerHTML = '<div class="admin-empty" style="grid-column:1/-1;">등록된 추가 상품이 없습니다.</div>';
+    return;
+  }
+  const stockColor = {available:'#2e7d32',soldout:'#c62828',preparing:'#e65100'};
+  container.innerHTML = products.map(p => `
+    <div class="product-admin-card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <div class="p-name">${p.name}</div>
+        <span class="product-custom-badge">CUSTOM</span>
+      </div>
+      <div class="p-price">${p.price}</div>
+      <div class="p-cat">${p.categoryLabel} · <span style="color:${stockColor[p.stock]||'#666'}">${p.stockLabel}</span></div>
+      ${p.desc ? `<div class="p-desc">${p.desc}</div>` : ''}
+      <div style="font-size:11px;color:#bbb;margin-top:6px;">${p.createdAt} 등록</div>
+      <div class="p-actions">
+        <button class="p-delete-btn" onclick="removeAdminProduct('${p.id}')">삭제</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 페이지 로드 시 URL 해시로 관리자 접근
+(function() {
+  if (location.hash === '#admin') {
+    goPage('admin');
+  }
+})();
 </script>
 </body>
 </html>
