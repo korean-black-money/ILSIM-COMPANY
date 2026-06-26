@@ -634,6 +634,19 @@ footer{background:var(--ink);padding:60px 0 38px;}
 .product-form-input:focus{outline:none;border-color:#5ab4f5;}
 .product-add-btn{background:#1a2332;color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;}
 .product-add-btn:hover{background:#2d3e50;}
+.img-upload-zone{border:2px dashed #d0d5dd;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:#fafbfc;position:relative;}
+.img-upload-zone:hover,.img-upload-zone.drag-over{border-color:#5ab4f5;background:#f0f8ff;}
+.img-upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.img-upload-icon{font-size:28px;margin-bottom:8px;}
+.img-upload-text{font-size:13px;color:#888;}
+.img-upload-text strong{color:#1a2332;}
+.img-upload-text span{font-size:11px;font-family:ui-monospace,monospace;display:block;margin-top:4px;color:#bbb;}
+.img-preview-wrap{display:none;margin-top:14px;position:relative;border-radius:8px;overflow:hidden;background:#f0f0f0;}
+.img-preview-wrap img{width:100%;max-height:180px;object-fit:cover;display:block;}
+.img-preview-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.img-preview-size{font-size:11px;color:#999;text-align:center;padding:4px;font-family:ui-monospace,monospace;}
+.product-admin-card .p-img{width:100%;height:120px;object-fit:cover;border-radius:6px;margin-bottom:10px;display:block;}
+.product-admin-card .p-img-placeholder{width:100%;height:80px;background:#f0f2f5;border-radius:6px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#ccc;}
 .product-list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
 .product-admin-card{background:#f7f9fc;border:1.5px solid #e8ecf0;border-radius:10px;padding:16px;}
 .product-admin-card .p-name{font-size:15px;font-weight:700;color:#1a2332;margin-bottom:4px;}
@@ -1792,6 +1805,25 @@ footer{background:var(--ink);padding:60px 0 38px;}
               <label class="product-form-label">상품 설명</label>
               <input class="product-form-input" type="text" id="p-desc" placeholder="간단한 상품 설명을 입력하세요">
             </div>
+            <div class="full">
+              <label class="product-form-label">상품 이미지</label>
+              <div class="img-upload-zone" id="p-img-zone"
+                ondragover="handleImgDragOver(event)"
+                ondragleave="handleImgDragLeave(event)"
+                ondrop="handleImgDrop(event)">
+                <input type="file" accept="image/*" id="p-image-file" onchange="handleProductImageSelect(this)">
+                <div class="img-upload-icon">🖼️</div>
+                <div class="img-upload-text">
+                  <strong>클릭하거나 이미지를 드래그하세요</strong>
+                  <span>JPG, PNG, WEBP · 최대 10MB · 자동 압축 적용</span>
+                </div>
+              </div>
+              <div class="img-preview-wrap" id="p-img-preview-wrap">
+                <img id="p-img-preview" src="" alt="미리보기">
+                <button type="button" class="img-preview-remove" onclick="removeProductImage()" title="이미지 제거">✕</button>
+                <div class="img-preview-size" id="p-img-size"></div>
+              </div>
+            </div>
             <div class="full" style="text-align:right;">
               <button type="submit" class="product-add-btn">+ 상품 등록</button>
             </div>
@@ -2834,6 +2866,82 @@ function deleteOrder(orderId) {
 }
 
 /* ----- 상품 관리 ----- */
+/* ===== 이미지 업로드 & 압축 ===== */
+let pendingProductImageDataUrl = null;
+
+function compressImage(file, maxWidth, quality) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function getBase64Size(dataUrl) {
+  const base64 = dataUrl.split(',')[1] || '';
+  const bytes = Math.round((base64.length * 3) / 4);
+  return bytes < 1024 * 1024
+    ? (bytes / 1024).toFixed(1) + ' KB'
+    : (bytes / 1024 / 1024).toFixed(2) + ' MB';
+}
+
+async function handleProductImageSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) {
+    alert('10MB 이하 이미지를 선택해 주세요.');
+    input.value = '';
+    return;
+  }
+  const dataUrl = await compressImage(file, 900, 0.78);
+  pendingProductImageDataUrl = dataUrl;
+  document.getElementById('p-img-preview').src = dataUrl;
+  document.getElementById('p-img-size').textContent = '압축 후 크기: ' + getBase64Size(dataUrl);
+  document.getElementById('p-img-preview-wrap').style.display = 'block';
+  document.getElementById('p-img-zone').style.display = 'none';
+}
+
+function removeProductImage() {
+  pendingProductImageDataUrl = null;
+  document.getElementById('p-image-file').value = '';
+  document.getElementById('p-img-preview').src = '';
+  document.getElementById('p-img-preview-wrap').style.display = 'none';
+  document.getElementById('p-img-zone').style.display = 'block';
+}
+
+function handleImgDragOver(e) {
+  e.preventDefault();
+  document.getElementById('p-img-zone').classList.add('drag-over');
+}
+
+function handleImgDragLeave(e) {
+  document.getElementById('p-img-zone').classList.remove('drag-over');
+}
+
+function handleImgDrop(e) {
+  e.preventDefault();
+  document.getElementById('p-img-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  const input = document.getElementById('p-image-file');
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+  handleProductImageSelect(input);
+}
+
+/* ===== 상품 등록/삭제/조회 ===== */
 function addAdminProduct(e) {
   e.preventDefault();
   const catMap = {fig:'무화과 제품',gecko:'게코 사료',gift:'선물세트',other:'기타'};
@@ -2849,12 +2957,19 @@ function addAdminProduct(e) {
     stock: stock,
     stockLabel: stockMap[stock],
     desc: document.getElementById('p-desc').value.trim(),
+    imageUrl: pendingProductImageDataUrl || '',
     createdAt: new Date().toLocaleDateString('ko-KR')
   };
   const products = JSON.parse(localStorage.getItem('ilsim_custom_products') || '[]');
   products.unshift(product);
-  localStorage.setItem('ilsim_custom_products', JSON.stringify(products));
+  try {
+    localStorage.setItem('ilsim_custom_products', JSON.stringify(products));
+  } catch(err) {
+    alert('저장 공간이 부족합니다. 이미지 없이 등록하거나 기존 상품을 삭제해 주세요.');
+    return;
+  }
   e.target.reset();
+  removeProductImage();
   loadAdminProducts();
   loadAdminStats();
   showToast('"' + product.name + '" 상품이 등록되었습니다.');
@@ -2879,6 +2994,9 @@ function loadAdminProducts() {
   const stockColor = {available:'#2e7d32',soldout:'#c62828',preparing:'#e65100'};
   container.innerHTML = products.map(p => `
     <div class="product-admin-card">
+      ${p.imageUrl
+        ? `<img class="p-img" src="${p.imageUrl}" alt="${p.name}">`
+        : `<div class="p-img-placeholder">🌿</div>`}
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
         <div class="p-name">${p.name}</div>
         <span class="product-custom-badge">CUSTOM</span>
