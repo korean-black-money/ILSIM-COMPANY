@@ -1797,13 +1797,19 @@ footer{background:var(--ink);padding:60px 0 38px;}
           </div>
           <div id="ga-loading" style="text-align:center;padding:20px;color:#888;font-size:13px;">불러오는 중...</div>
           <div id="ga-content" style="display:none;">
-            <div style="display:flex;align-items:center;gap:16px;padding:12px 0 16px;">
-              <div style="background:#e8f5e9;border-radius:12px;padding:12px 24px;text-align:center;">
-                <div style="font-size:36px;font-weight:700;color:#2e7d32;line-height:1;" id="ga-active-users">0</div>
-                <div style="font-size:12px;color:#555;margin-top:4px;">현재 접속자</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 0 16px;flex-wrap:wrap;">
+              <div style="background:#e8f5e9;border-radius:12px;padding:12px 20px;text-align:center;min-width:100px;">
+                <div style="font-size:34px;font-weight:700;color:#2e7d32;line-height:1;" id="ga-active-users-5">0</div>
+                <div style="font-size:11px;color:#555;margin-top:4px;">지난 5분</div>
               </div>
-              <div style="font-size:11px;color:#aaa;" id="ga-updated-at"></div>
-              <div style="font-size:11px;color:#bbb;" id="ga-next-refresh"></div>
+              <div style="background:#e3f2fd;border-radius:12px;padding:12px 20px;text-align:center;min-width:100px;">
+                <div style="font-size:34px;font-weight:700;color:#1565c0;line-height:1;" id="ga-active-users-30">0</div>
+                <div style="font-size:11px;color:#555;margin-top:4px;">지난 30분</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="font-size:11px;color:#aaa;" id="ga-updated-at"></div>
+                <div style="font-size:11px;color:#bbb;" id="ga-next-refresh"></div>
+              </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
               <div>
@@ -3088,7 +3094,8 @@ async function loadGAStats() {
 
     if (data.error) throw new Error(data.error);
 
-    document.getElementById('ga-active-users').textContent = data.activeUsers || 0;
+    document.getElementById('ga-active-users-5').textContent  = data.activeUsers5  ?? 0;
+    document.getElementById('ga-active-users-30').textContent = data.activeUsers30 ?? 0;
     document.getElementById('ga-updated-at').textContent =
       '업데이트: ' + new Date(data.updatedAt).toLocaleTimeString('ko-KR');
 
