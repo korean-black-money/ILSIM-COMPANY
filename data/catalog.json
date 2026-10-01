@@ -1,0 +1,93 @@
+{
+  "storeUrl": "https://smartstore.naver.com/pigisland",
+  "products": [
+    {
+      "id": "red-fig",
+      "name": "해풍맞은 압해도 홍무화과",
+      "category": "fig",
+      "tag": "농장에서 식탁까지",
+      "subtitle": "부드러운 과육에 가득 담긴 달콤함",
+      "description": "전남 신안 압해도에서 재배한 홍무화과입니다. 제철 과일의 향과 부드러운 식감을 그대로 즐겨보세요.",
+      "image": "images/red-fig/cover.webp",
+      "stock": "inquiry",
+      "storeUrl": "",
+      "options": [
+        {
+          "name": "500g",
+          "price": 16000
+        },
+        {
+          "name": "1kg",
+          "price": 24000
+        },
+        {
+          "name": "1.5kg",
+          "price": 31000
+        },
+        {
+          "name": "2kg",
+          "price": 37000
+        }
+      ],
+      "details": "red-fig",
+      "shipping": "배송 일정과 배송비는 스마트스토어에서 확인해 주세요.",
+      "priceNote": "제공된 상세페이지 기준 · 최종 판매가와 재고는 스마트스토어에서 확인해 주세요."
+    },
+    {
+      "id": "green-fig",
+      "name": "해풍맞은 압해도 청무화과",
+      "category": "fig",
+      "tag": "초록빛 속 깊은 달콤함",
+      "subtitle": "초록 껍질 속, 붉게 익은 한 입",
+      "description": "초록빛 껍질 속에 붉은 과육을 품은 압해도 청무화과입니다. 홍무화과와는 또 다른 식감과 풍미를 만나보세요.",
+      "image": "images/green-fig/cover.webp",
+      "stock": "inquiry",
+      "storeUrl": "",
+      "options": [
+        {
+          "name": "500g",
+          "price": 18000
+        },
+        {
+          "name": "1kg",
+          "price": 27000
+        },
+        {
+          "name": "1.5kg",
+          "price": 35000
+        },
+        {
+          "name": "2kg",
+          "price": 42000
+        }
+      ],
+      "details": "green-fig",
+      "shipping": "배송 일정과 배송비는 스마트스토어에서 확인해 주세요.",
+      "priceNote": "제공된 상세페이지 기준 · 최종 판매가와 재고는 스마트스토어에서 확인해 주세요."
+    },
+    {
+      "id": "gecko",
+      "name": "일심 무화과 게코사료",
+      "category": "gecko",
+      "tag": "ILSIM GECKO MEAL",
+      "subtitle": "압해도 무화과로 짓는 게코의 한 끼",
+      "description": "지역 무화과의 가치를 새로운 한 끼로 연결합니다. 제품 구성과 구매 가능 여부는 문의를 통해 안내드립니다.",
+      "image": "images/gecko-product.png",
+      "stock": "inquiry",
+      "storeUrl": "",
+      "options": [
+        {
+          "name": "기본형 60g",
+          "price": 18000
+        },
+        {
+          "name": "대용량 200g",
+          "price": 48000
+        }
+      ],
+      "details": "",
+      "shipping": "구매 가능 여부와 배송 일정은 상담 시 안내드립니다.",
+      "priceNote": "기존 안내 가격 · 구매 전 상담 필요"
+    }
+  ]
+}

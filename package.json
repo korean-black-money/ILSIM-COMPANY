@@ -1,0 +1,17 @@
+{
+  "name": "ilsim-company",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-cloudflare.mjs",
+    "test": "node --test tests/cloudflare.test.mjs",
+    "db:generate": "drizzle-kit generate --config cloudflare/drizzle.config.ts"
+  },
+  "devDependencies": {
+    "drizzle-kit": "0.31.10",
+    "drizzle-orm": "0.45.2",
+    "esbuild": "0.25.12",
+    "wrangler": "4.92.0"
+  }
+}

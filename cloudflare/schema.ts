@@ -1,0 +1,11 @@
+import { sqliteTable, text, integer, primaryKey, index, uniqueIndex } from 'drizzle-orm/sqlite-core';
+export const config = sqliteTable('config', { key:text('key').primaryKey(), value:text('value').notNull() });
+export const products = sqliteTable('products', { id:text('id').primaryKey(), body:text('body').notNull() });
+export const posts = sqliteTable('posts', { id:text('id').primaryKey(), body:text('body').notNull() });
+export const sessions = sqliteTable('sessions', { token:text('token').primaryKey(), csrf:text('csrf').notNull(), admin:integer('admin').notNull().default(0), expires:integer('expires').notNull() }, t=>[index('sessions_expiry').on(t.expires)]);
+export const orders = sqliteTable('orders', { id:text('id').primaryKey(), created:text('created').notNull(), status:text('status').notNull(), body:text('body').notNull(), requestKey:text('request_key').notNull() },t=>[uniqueIndex('orders_request_key').on(t.requestKey),index('orders_created').on(t.created)]);
+export const inquiries = sqliteTable('inquiries', { id:text('id').primaryKey(), created:text('created').notNull(), status:text('status').notNull(), body:text('body').notNull(), requestKey:text('request_key').notNull() },t=>[uniqueIndex('inquiries_request_key').on(t.requestKey),index('inquiries_created').on(t.created)]);
+export const comments = sqliteTable('comments', { id:text('id').primaryKey(), postId:text('post_id').notNull(), author:text('author').notNull(), content:text('content').notNull(), created:text('created').notNull(), password:text('password').notNull() },t=>[index('comments_post').on(t.postId)]);
+export const likes = sqliteTable('likes', { postId:text('post_id').notNull(), visitor:text('visitor').notNull() },t=>[primaryKey({columns:[t.postId,t.visitor]})]);
+export const visits = sqliteTable('visits', { day:text('day').notNull(), visitor:text('visitor').notNull() },t=>[primaryKey({columns:[t.day,t.visitor]})]);
+export const limits = sqliteTable('limits', { key:text('key').primaryKey(), count:integer('count').notNull(), expires:integer('expires').notNull() },t=>[index('limits_expiry').on(t.expires)]);
