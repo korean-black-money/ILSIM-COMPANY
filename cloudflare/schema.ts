@@ -9,3 +9,4 @@ export const comments = sqliteTable('comments', { id:text('id').primaryKey(), po
 export const likes = sqliteTable('likes', { postId:text('post_id').notNull(), visitor:text('visitor').notNull() },t=>[primaryKey({columns:[t.postId,t.visitor]})]);
 export const visits = sqliteTable('visits', { day:text('day').notNull(), visitor:text('visitor').notNull() },t=>[primaryKey({columns:[t.day,t.visitor]})]);
 export const limits = sqliteTable('limits', { key:text('key').primaryKey(), count:integer('count').notNull(), expires:integer('expires').notNull() },t=>[index('limits_expiry').on(t.expires)]);
+export const imageChunks = sqliteTable('image_chunks', { name:text('name').notNull(), part:integer('part').notNull(), contentType:text('content_type').notNull(), data:text('data').notNull() },t=>[primaryKey({columns:[t.name,t.part]})]);

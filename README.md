@@ -6,7 +6,7 @@
 
 배포 경로는 **GitHub `korean-black-money/ILSIM-COMPANY` → Cloudflare Pages `ilsim-company`**입니다. `cloudflare/worker.js`를 빌드한 루트 `_worker.js`가 관리자·문의 API를 제공하고 기존 루트 HTML·이미지를 함께 제공합니다. Python 서버는 별도의 로컬 미리보기입니다.
 
-개편본은 Cloudflare에 `DB`·`BUCKET` 바인딩과 관리자 비밀값을 연결한 뒤 운영 브랜치에 반영해야 합니다. 저장소 연결만으로 이 자원이 생성되지는 않습니다.
+Cloudflare 운영·미리보기 환경에 서로 다른 `DB` 저장소와 `ILSIM_ADMIN_HASH` 비밀값을 연결했습니다. 관리자 업로드 이미지는 D1에 분할 저장하며 별도 R2 활성화 없이 작동합니다. R2 `BUCKET`을 나중에 연결해도 기존 D1 이미지를 계속 조회합니다.
 
 ## 실행
 
@@ -49,18 +49,18 @@ python3 manage_admin.py
 
 현재 운영 사이트는 https://ilsim-company.pages.dev 입니다. 기존 `main` 푸시에 따른 자동 배포를 유지합니다. GitHub Pages나 Sites를 새 배포 대상으로 사용하지 않습니다.
 
-개편본 운영 전 다음 Cloudflare 설정이 필요합니다.
+현재 연결 설정과 재배포 절차입니다.
 
-1. Pages 프로젝트 `ilsim-company`에 D1 데이터베이스를 `DB` 이름으로 연결합니다.
+1. Pages 프로젝트 `ilsim-company`의 `DB`: 운영 `ilsim-company` (`e323816c-0514-47d4-afed-a66b9097d626`), 미리보기 `ilsim-company-preview` (`8e89185f-18c9-4da6-846e-7db29d9a7dd7`). 두 환경의 데이터를 분리합니다.
 2. `cloudflare/migrations/`의 SQL을 해당 데이터베이스에 적용합니다. 이미 적용한 마이그레이션 파일은 수정하지 않습니다.
-3. 업로드 이미지를 보관할 R2 버킷을 `BUCKET` 이름으로 연결합니다.
+3. 업로드 이미지는 `image_chunks` 테이블에 512 KiB 이하의 Base64 조각으로 원자적으로 저장합니다. 파일 제한은 PNG/JPG/WebP 5MB입니다. 현재 계정에서 R2는 미활성 상태여서 사용하지 않습니다. 추후 `BUCKET`을 연결하면 새 업로드는 R2, 기존 파일은 D1에서 조회합니다. D1 무료 저장 용량은 데이터베이스당 500MB이므로 이미지 업로드가 많아지면 R2 전환을 권장합니다.
 4. 관리자 비밀번호 검증값을 `ILSIM_ADMIN_HASH` 비밀 환경변수에 설정합니다. 형식은 `salt:PBKDF2-SHA256(100000회)`이며 비밀번호와 검증값을 저장소에 커밋하지 않습니다. `ILSIM_ORIGIN`은 지정하지 않으면 요청의 공개 Origin을 기준으로 검증하므로 운영·미리보기 주소에서 각각 작동합니다.
 5. 빌드 후 `_worker.js`를 커밋하고 `main`에 푸시합니다. 기존 Pages 설정처럼 별도 빌드 명령 없이 루트를 배포할 수 있도록 완성된 `_worker.js`를 함께 관리합니다. `_routes.json`의 전체 경로 처리를 유지해야 소스·비공개 경로가 노출되지 않습니다.
 6. Cloudflare 배포 성공 후 상품 조회·관리자 로그인·문의 저장·네이버 확인 파일을 공개 주소에서 검증합니다.
 
 Node.js 24 환경에서 `pnpm install`, `pnpm build`, `pnpm test`로 서버 코드를 빌드하고 검증합니다. 스키마 변경 시에는 `pnpm db:generate`를 사용합니다. `data/`의 상품·게시물은 최초 데이터베이스 초기화 때만 들어가며 이후 수정은 관리자에서 수행합니다.
 
-로컬 미리보기 데이터와 운영 서버 데이터는 자동 동기화되지 않습니다. 새 운영 저장소를 연결하는 단계에는 Cloudflare 계정 권한이 필요합니다. 현재 개편본의 운영 반영은 해당 권한 및 저장소 연결이 완료될 때까지 대기합니다.
+로컬 미리보기 데이터와 운영 서버 데이터는 자동 동기화되지 않습니다. 운영·미리보기 모두 관리자 비밀값을 설정하고 `fail_open=false`를 적용했습니다. `0000`·`0001` 마이그레이션을 두 저장소에 적용했으며 `d1_migrations`에서 적용 이력을 확인할 수 있습니다. 관리자 로그인 정보는 기존 로컬 `.runtime/admin-access.txt`와 같습니다.
 
 ## 검증
 

@@ -8,6 +8,13 @@
       "when": 1790863911909,
       "tag": "0000_worthless_santa_claus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1790874625419,
+      "tag": "0001_wise_ma_gnuci",
+      "breakpoints": true
     }
   ]
 }

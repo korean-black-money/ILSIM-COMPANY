@@ -26,6 +26,19 @@ class Client{
 }
 before(async()=>{for(const file of (await readdir('cloudflare/migrations')).filter(f=>f.endsWith('.sql')).sort())db.db.exec(await readFile('cloudflare/migrations/'+file,'utf8'));env.ILSIM_ADMIN_HASH=await hashPassword('test-only-password-123');});
 after(()=>db.db.close());
+test('D1 image storage preserves multi-part images without R2',async()=>{
+  const a=await new Client().init();await a.login();const bucket=env.BUCKET;delete env.BUCKET;
+  try{
+    const raw=Buffer.alloc(1100000,42);Buffer.from([137,80,78,71,13,10,26,10]).copy(raw);
+    const uploaded=await a.request('/api/admin/upload','POST',{data:raw.toString('base64')});
+    assert.equal(uploaded.status,200);assert.ok(db.db.prepare('SELECT count(*) AS n FROM image_chunks').get().n>1);
+    const response=await worker.fetch(new Request(origin+'/'+uploaded.value.url),env);
+    assert.equal(response.status,200);assert.equal(response.headers.get('Content-Type'),'image/png');
+    assert.deepEqual(Buffer.from(await response.arrayBuffer()),raw);
+    assert.equal((await worker.fetch(new Request(origin+'/'+uploaded.value.url,{method:'HEAD'}),env)).status,200);
+    assert.equal((await a.request('/images/uploads/'+'0'.repeat(32)+'.png')).status,404);
+  }finally{env.BUCKET=bucket;}
+});
 test('Public catalog, actual reviews, Naver original bytes and private files',async()=>{
   const c=await new Client().init();const cat=await c.request('/api/catalog');assert.equal(cat.status,200);assert.equal(cat.value.products.length,3);
   const r=await c.request('/api/reviews');assert.equal(r.value.length,15);assert.equal(r.value.reduce((n,x)=>n+x.rating,0),71);

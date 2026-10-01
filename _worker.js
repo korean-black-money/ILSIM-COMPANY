@@ -556,8 +556,13 @@ async function api(request, env, url) {
     const start = Array.from(raw.slice(0, 8)).join(","), str = (a, b) => String.fromCharCode(...raw.slice(a, b));
     const ext = start === "137,80,78,71,13,10,26,10" ? "png" : raw[0] === 255 && raw[1] === 216 && raw[2] === 255 ? "jpg" : str(0, 4) === "RIFF" && str(8, 12) === "WEBP" ? "webp" : null;
     if (!ext) fail("PNG, JPG, WEBP \uC774\uBBF8\uC9C0\uB97C \uC0AC\uC6A9\uD574 \uC8FC\uC138\uC694.");
-    const name = random(16) + "." + ext;
-    await env.BUCKET.put(name, raw, { httpMetadata: { contentType: "image/" + (ext === "jpg" ? "jpeg" : ext) } });
+    const name = random(16) + "." + ext, contentType = "image/" + (ext === "jpg" ? "jpeg" : ext);
+    if (env.BUCKET) await env.BUCKET.put(name, raw, { httpMetadata: { contentType } });
+    else {
+      const chunks = [];
+      for (let offset = 0; offset < data.data.length; offset += 524288) chunks.push(stmt(db, "INSERT INTO image_chunks (name,part,content_type,data) VALUES (?,?,?,?)", [name, chunks.length, contentType, data.data.slice(offset, offset + 524288)]));
+      await db.batch(chunks);
+    }
     return json({ url: "images/uploads/" + name });
   }
   if (path === "/api/admin/products" && method === "POST") {
@@ -609,7 +614,12 @@ Sitemap: ${origin}/sitemap.xml
 `, { headers: { ...security, "Content-Type": "text/plain; charset=utf-8" } });
       if (url.pathname === "/sitemap.xml") return new Response(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${origin}/</loc></url></urlset>`, { headers: { ...security, "Content-Type": "application/xml; charset=utf-8" } });
       if (/^\/images\/uploads\/[a-f0-9]{32}\.(png|jpg|webp)$/.test(url.pathname)) {
-        const object = await env.BUCKET.get(url.pathname.split("/").at(-1));
+        const name = url.pathname.split("/").at(-1);
+        let object = env.BUCKET ? await env.BUCKET.get(name) : null;
+        if (!object && env.DB) {
+          const chunks = await all(env.DB, "SELECT content_type,data FROM image_chunks WHERE name=? ORDER BY part", [name]);
+          if (chunks.length) object = { body: request.method === "HEAD" ? null : Uint8Array.from(atob(chunks.map((c) => c.data).join("")), (c) => c.charCodeAt(0)), httpMetadata: { contentType: chunks[0].content_type } };
+        }
         if (!object) return new Response("Not Found", { status: 404, headers: security });
         return new Response(request.method === "HEAD" ? null : object.body, { headers: { ...security, "Content-Type": object.httpMetadata.contentType, "Cache-Control": "public, max-age=3600" } });
       }
